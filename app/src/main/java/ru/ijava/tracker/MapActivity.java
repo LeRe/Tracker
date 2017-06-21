@@ -3,6 +3,7 @@ package ru.ijava.tracker;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -13,6 +14,12 @@ import java.io.InputStream;
  * Created by levchenko on 21.06.2017.
  */
 public class MapActivity extends AppCompatActivity {
+
+    public static final String LATITUDE_PATTERN = "$LATITUDE$";
+    public static final String LONGITUDE_PATTERN = "$LONGITUDE$";
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +37,10 @@ public class MapActivity extends AppCompatActivity {
             is.close();
 
             String htmlText = new String(buffer);
+
+            htmlText = htmlText.replace(LATITUDE_PATTERN, "44.89");
+            htmlText = htmlText.replace(LONGITUDE_PATTERN, "37.32");
+
             myWebView.loadDataWithBaseURL(
                     "http://ru.yandex.api.yandexmapswebviewexample.ymapapp",
                     htmlText,
@@ -41,6 +52,5 @@ public class MapActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
     }
 }

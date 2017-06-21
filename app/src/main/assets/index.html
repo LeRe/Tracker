@@ -9,7 +9,7 @@
         var myMap;
         ymaps.ready(function () {
             myMap = new ymaps.Map('map', {
-                center: [55.73933933, 37.60681734],
+                center: [$LATITUDE$, $LONGITUDE$],
                 zoom: 16
             });
             var placemark = new ymaps.Placemark(myMap.getCenter(), {
