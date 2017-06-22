@@ -1,4 +1,4 @@
-package ru.ijava.tracker;
+package ru.ijava.tracker.activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -20,9 +20,12 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class MenuActivity extends AppCompatActivity {
+import ru.ijava.tracker.R;
+import ru.ijava.tracker.model.Device;
 
+public class MenuActivity extends AppCompatActivity {
     private TextView mTextMessage;
+    private Device mDevice;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -53,6 +56,7 @@ public class MenuActivity extends AppCompatActivity {
         mTextMessage.setText(R.string.title_dashboard);
 
         Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra(MapActivity.DEVICE_KEY, mDevice);
         startActivity(intent);
     }
 
@@ -64,6 +68,9 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        mDevice = new Device();
+        mDevice.setNickName("ReLe");
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -88,7 +95,12 @@ public class MenuActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        Toast.makeText(mContext, "Location success!" + location.getLatitude() + " " + location.getLongitude(), Toast.LENGTH_SHORT).show();
+                        ru.ijava.tracker.model.Location deviceLocation = new ru.ijava.tracker.model.Location();
+                        deviceLocation.setLatitude(location.getLatitude());
+                        deviceLocation.setLongitude(location.getLongitude());
+                        mDevice.setLocation(deviceLocation);
+
+                        Toast.makeText(mContext, "Location is determined successfully!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

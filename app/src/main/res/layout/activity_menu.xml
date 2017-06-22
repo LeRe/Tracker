@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ru.ijava.tracker.MenuActivity">
+    tools:context="ru.ijava.tracker.activity.MenuActivity">
 
     <FrameLayout
         android:id="@+id/content"
