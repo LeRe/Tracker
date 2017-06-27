@@ -9,13 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final String CREATE_TABLE = "CREATE TABLE myTable(...)";
-    private static final String DB_NAME = "mySuperDB.db";
-    private static final int DB_VERSION = 1;
+
     Context mContext;
 
     DBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, DBContract.DB_NAME, null, DBContract.DB_VERSION);
         mContext = context;
 
     }
