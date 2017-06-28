@@ -1,4 +1,4 @@
-package ru.ijava.tracker.model;
+package ru.ijava.tracker.db;
 
 import android.provider.BaseColumns;
 
@@ -25,6 +25,9 @@ public class DBContract {
                 _ID + " " + COLUMN_TYPE_ID + ", " +
                 COLUMN_NAME_NICKNAME + " " + COLUMN_TYPE_NICKNAME +
                 ");";
+
+        public static final String DELETE_TABLE =
+                "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
     public static class Location implements BaseColumns {
@@ -52,6 +55,9 @@ public class DBContract {
                 COLUMN_NAME_LATITUDE + " " + COLUMN_TYPE_LATITUDE + ", " +
                 COLUMN_NAME_LONGITUDE + " " + COLUMN_TYPE_LONGITUDE +
                 ");";
+
+        public static final String DELETE_TABLE =
+                "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 
 }
