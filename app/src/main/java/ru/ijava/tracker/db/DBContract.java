@@ -15,7 +15,7 @@ public class DBContract {
     public static class Device implements BaseColumns {
         public static final String TABLE_NAME = "device";
 
-        public static final String COLUMN_TYPE_ID = "INTEGER PRIMARY KEY AUTOINCREMENT";
+        public static final String COLUMN_TYPE_ID = "TEXT PRIMARY KEY";
 
         public static final String COLUMN_NAME_NICKNAME = "nickname";
         public static final String COLUMN_TYPE_NICKNAME = "TEXT";
@@ -36,7 +36,7 @@ public class DBContract {
         public static final String COLUMN_TYPE_ID = "INTEGER PRIMARY KEY AUTOINCREMENT";
 
         public static final String COLUMN_NAME_DEVICE_ID = "device_id";
-        public static final String COLUMN_TYPE_DEVICE_ID = "INTEGER";
+        public static final String COLUMN_TYPE_DEVICE_ID = "TEXT";
 
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         public static final String COLUMN_TYPE_TIMESTAMP = "INTEGER";

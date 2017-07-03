@@ -9,6 +9,15 @@ import java.io.Serializable;
 public class Location implements Serializable {
     private double latitude;
     private double longitude;
+    private long time;
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 
     public double getLatitude() {
         return latitude;

@@ -12,13 +12,7 @@
                 center: [$LATITUDE$, $LONGITUDE$],
                 zoom: 16
             });
-            var placemark = new ymaps.Placemark(myMap.getCenter(), {
-                balloonContent: '$NICK_NAME$'
-            }, {
-                iconColor: 'red'
-            });
-            myMap.geoObjects.add(placemark);
-            placemark.balloon.open();
+            $BALLOON$
         });
     </script>
     <style>
