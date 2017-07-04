@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,8 @@ public class MenuActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private Device mDevice;
 
+    DBHelper sqliteDB = new DBHelper(this);
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -35,6 +38,16 @@ public class MenuActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_notifications:
                     Notifications();
+
+                    if(mDevice.getLocation() != null) {
+                        sqliteDB.saveDeviceLocation(mDevice, mDevice.getLocation());
+                        mTextMessage.setText("Location saved...");
+                    }
+                    else {
+                        Log.i("RELE", "No location for save!");
+                    }
+
+
                     return true;
             }
             return false;
@@ -67,14 +80,13 @@ public class MenuActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mDevice = new Device();
+
+
+        mDevice = new Device(this);
         mDevice.setNickName("ReLe");
         mDevice.spotLocation(this);
 
-        if(mDevice.getLocation() != null) {
-            DBHelper sqliteDB = new DBHelper(this);
-
-        }
+        mTextMessage.setText("Total count in Location table: " + Integer.toString(sqliteDB.countLocationRecords()));
     }
 
     @Override
@@ -95,6 +107,14 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_notifications:
                 Notifications();
+                if(mDevice.getLocation() != null) {
+                    sqliteDB.saveDeviceLocation(mDevice, mDevice.getLocation());
+                    mTextMessage.setText("Location saved...");
+                }
+                else {
+                    Log.i("RELE", "No location for save!");
+                }
+
                 return true;
         }
         return super.onOptionsItemSelected(item);

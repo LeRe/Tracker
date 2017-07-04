@@ -30,6 +30,7 @@ public class Device implements Serializable {
         setId(iid);
 
         //TODO read nickName from preferences
+        setNickName("PreferenceRELE");
 
     }
 
