@@ -88,4 +88,97 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return result;
     }
+
+    public void dumpTables() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        dumpTable2Log(db, DBContract.Device.TABLE_NAME);
+        dumpTable2Log(db, DBContract.Location.TABLE_NAME);
+
+        db.close();
+    }
+
+    private void dumpTable2Log(SQLiteDatabase db, String tableName) {
+        Cursor cursor = db.rawQuery("select * from " + tableName, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int countRows = cursor.getCount();
+            int countColumns = cursor.getColumnCount();
+
+            cursor.moveToFirst();
+            for( int i = 0; i < countRows; i++ ) {
+                StringBuilder str = new StringBuilder();
+                for (int j = 0; j < countColumns; j++)
+                {
+                    str.append(cursor.getString(j) + " ");
+                }
+                Log.i("RELE", str.toString());
+                cursor.moveToNext();
+            }
+        }
+        else {
+            Log.i("RELE", "Table " + tableName + " empty");
+        }
+    }
+
+    public void loadData() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        onUpgrade(db, 0, 0); //Clear tables
+
+
+        String[] arrRecords = {
+
+                /*
+1 fbhnWIJJCyY 1499137826465 55.4219 37.7711
+2 fbhnWIJJCyY 1499137826465 55.4219 37.7711
+3 fbhnWIJJCyY 1499137826465 55.4219 37.7711
+4 fbhnWIJJCyY 1499138180917 55.4219 37.771
+5 fbhnWIJJCyY 1499140074791 55.4259 37.7673
+6 fbhnWIJJCyY 1499140167422 55.4219 37.771
+7 fbhnWIJJCyY 1499140377727 55.4219 37.771
+8 fbhnWIJJCyY 1499143442071 55.4397 37.7496
+9 fbhnWIJJCyY 1499145574256 55.428 37.7708
+10 fbhnWIJJCyY 1499145877576 55.4048 37.784
+11 fbhnWIJJCyY 1499146447615 55.3338 37.7298
+12 fbhnWIJJCyY 1499152267238 55.171 37.3443
+13 fbhnWIJJCyY 1499153647243 55.2162 36.984
+14 fbhnWIJJCyY 1499154189734 55.2095 36.9609
+15 fbhnWIJJCyY 1499154189734 55.2095 36.9609
+16 fbhnWIJJCyY 1499167567159 55.2095 36.9609
+*/
+
+        };
+
+
+        ContentValues values = new ContentValues();
+
+        values.put(DBContract.Location._ID, );
+        values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, );
+        values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, );
+        values.put(DBContract.Location.COLUMN_NAME_LATITUDE, );
+        values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, );
+
+        db.insert(DBContract.Location.TABLE_NAME, null, values);
+
+
+/*
+1 fbhnWIJJCyY 1499137826465 55.4219 37.7711
+2 fbhnWIJJCyY 1499137826465 55.4219 37.7711
+3 fbhnWIJJCyY 1499137826465 55.4219 37.7711
+4 fbhnWIJJCyY 1499138180917 55.4219 37.771
+5 fbhnWIJJCyY 1499140074791 55.4259 37.7673
+6 fbhnWIJJCyY 1499140167422 55.4219 37.771
+7 fbhnWIJJCyY 1499140377727 55.4219 37.771
+8 fbhnWIJJCyY 1499143442071 55.4397 37.7496
+9 fbhnWIJJCyY 1499145574256 55.428 37.7708
+10 fbhnWIJJCyY 1499145877576 55.4048 37.784
+11 fbhnWIJJCyY 1499146447615 55.3338 37.7298
+12 fbhnWIJJCyY 1499152267238 55.171 37.3443
+13 fbhnWIJJCyY 1499153647243 55.2162 36.984
+14 fbhnWIJJCyY 1499154189734 55.2095 36.9609
+15 fbhnWIJJCyY 1499154189734 55.2095 36.9609
+16 fbhnWIJJCyY 1499167567159 55.2095 36.9609
+*/
+
+    }
 }
