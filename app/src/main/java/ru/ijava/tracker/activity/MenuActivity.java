@@ -87,6 +87,8 @@ public class MenuActivity extends AppCompatActivity {
         mDevice.spotLocation(this);
 
         mTextMessage.setText("Total count in Location table: " + Integer.toString(sqliteDB.countLocationRecords()));
+
+        sqliteDB.loadData();
     }
 
     @Override

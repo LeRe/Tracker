@@ -46,14 +46,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long rowId = db.insert(DBContract.Location.TABLE_NAME, null, values);
 
-        Log.i("RELE", "-------------");
-        Log.i("RELE","Insert row id = " + rowId);
-        Log.i("RELE","device id: " + device.getId());
-        Log.i("RELE", "timestamp: " + Long.toString(device.getLocation().getTime()));
-        Log.i("RELE", "latitude: " + location.getLatitude());
-        Log.i("RELE", "longitude: " + location.getLongitude());
-        Log.i("RELE", "-------------");
-
         db.close();
     }
 
@@ -65,24 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         int result = -1;
         if(cursor != null && cursor.moveToFirst()) {
-            Log.i("RELE","select count(*)");
-            Log.i("RELE", "Column count: " + cursor.getColumnCount());
-            Log.i("RELE", "Rows in cursor: " + cursor.getCount());
-
             result = cursor.getInt(0);
-        }
-
-
-      cursor = db.
-                rawQuery("select * from " + DBContract.Location.TABLE_NAME, null);
-
-        if(cursor != null && cursor.moveToFirst()) {
-            Log.i("RELE","select *");
-            Log.i("RELE", "Column count: " + cursor.getColumnCount());
-            Log.i("RELE", "Rows in cursor: " + cursor.getCount());
-        }
-        else {
-            Log.i("RELE", "cursor is null or move to first record false");
         }
 
         db.close();
@@ -121,46 +96,45 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void loadData() {
-
         SQLiteDatabase db = this.getWritableDatabase();
         onUpgrade(db, 0, 0); //Clear tables
 
-
-        String[] arrRecords = {
-
-                /*
-1 fbhnWIJJCyY 1499137826465 55.4219 37.7711
-2 fbhnWIJJCyY 1499137826465 55.4219 37.7711
-3 fbhnWIJJCyY 1499137826465 55.4219 37.7711
-4 fbhnWIJJCyY 1499138180917 55.4219 37.771
-5 fbhnWIJJCyY 1499140074791 55.4259 37.7673
-6 fbhnWIJJCyY 1499140167422 55.4219 37.771
-7 fbhnWIJJCyY 1499140377727 55.4219 37.771
-8 fbhnWIJJCyY 1499143442071 55.4397 37.7496
-9 fbhnWIJJCyY 1499145574256 55.428 37.7708
-10 fbhnWIJJCyY 1499145877576 55.4048 37.784
-11 fbhnWIJJCyY 1499146447615 55.3338 37.7298
-12 fbhnWIJJCyY 1499152267238 55.171 37.3443
-13 fbhnWIJJCyY 1499153647243 55.2162 36.984
-14 fbhnWIJJCyY 1499154189734 55.2095 36.9609
-15 fbhnWIJJCyY 1499154189734 55.2095 36.9609
-16 fbhnWIJJCyY 1499167567159 55.2095 36.9609
-*/
-
+        String[][] arrRecords = {
+            {"1", "fbhnWIJJCyY", "1499137826465", "55.4219", "37.7711"},
+            {"2", "fbhnWIJJCyY", "1499137826465", "55.4219", "37.7711"},
+            {"3", "fbhnWIJJCyY", "1499137826465", "55.4219", "37.7711"},
+            {"4", "fbhnWIJJCyY", "1499138180917", "55.4219", "37.771"},
+            {"5", "fbhnWIJJCyY", "1499140074791", "55.4259", "37.7673"},
+            {"6", "fbhnWIJJCyY", "1499140167422", "55.4219", "37.771"},
+            {"7", "fbhnWIJJCyY", "1499140377727", "55.4219", "37.771"},
+            {"8", "fbhnWIJJCyY", "1499143442071", "55.4397", "37.7496"},
+            {"9", "fbhnWIJJCyY", "1499145574256", "55.428", "37.7708"},
+            {"10", "fbhnWIJJCyY", "1499145877576", "55.4048", "37.784"},
+            {"11", "fbhnWIJJCyY", "1499146447615", "55.3338", "37.7298"},
+            {"12", "fbhnWIJJCyY", "1499152267238", "55.171", "37.3443"},
+            {"13", "fbhnWIJJCyY", "1499153647243", "55.2162", "36.984"},
+            {"14", "fbhnWIJJCyY", "1499154189734", "55.2095", "36.9609"},
+            {"15", "fbhnWIJJCyY", "1499154189734", "55.2095", "36.9609"},
+            {"16", "fbhnWIJJCyY", "1499167567159", "55.2095", "36.9609"}
         };
 
+        for (int i = 0; i < arrRecords.length; i++) {
+            StringBuilder str = new StringBuilder();
+            for (int j = 0; j < arrRecords[i].length; j++ ) {
+                str.append(arrRecords[i][j] + " ");
+            }
+            Log.i("RELE", str.toString());
+        }
 
-        ContentValues values = new ContentValues();
-
-        values.put(DBContract.Location._ID, );
-        values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, );
-        values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, );
-        values.put(DBContract.Location.COLUMN_NAME_LATITUDE, );
-        values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, );
-
-        db.insert(DBContract.Location.TABLE_NAME, null, values);
-
-
+//        ContentValues values = new ContentValues();
+//
+//        values.put(DBContract.Location._ID, );
+//        values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, );
+//        values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, );
+//        values.put(DBContract.Location.COLUMN_NAME_LATITUDE, );
+//        values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, );
+//
+//        db.insert(DBContract.Location.TABLE_NAME, null, values);
 /*
 1 fbhnWIJJCyY 1499137826465 55.4219 37.7711
 2 fbhnWIJJCyY 1499137826465 55.4219 37.7711
@@ -179,6 +153,5 @@ public class DBHelper extends SQLiteOpenHelper {
 15 fbhnWIJJCyY 1499154189734 55.2095 36.9609
 16 fbhnWIJJCyY 1499167567159 55.2095 36.9609
 */
-
     }
 }
