@@ -49,11 +49,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int countLocationRecords() {
+    public int countRecords(String tableName) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.
-                rawQuery("select count(*) from " + DBContract.Location.TABLE_NAME, null);
+                rawQuery("select count(*) from " + tableName, null);
 
         int result = -1;
         if(cursor != null && cursor.moveToFirst()) {
@@ -119,22 +119,17 @@ public class DBHelper extends SQLiteOpenHelper {
         };
 
         for (int i = 0; i < arrRecords.length; i++) {
-            StringBuilder str = new StringBuilder();
-            for (int j = 0; j < arrRecords[i].length; j++ ) {
-                str.append(arrRecords[i][j] + " ");
-            }
-            Log.i("RELE", str.toString());
-        }
+            ContentValues values = new ContentValues();
 
-//        ContentValues values = new ContentValues();
-//
-//        values.put(DBContract.Location._ID, );
-//        values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, );
-//        values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, );
-//        values.put(DBContract.Location.COLUMN_NAME_LATITUDE, );
-//        values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, );
-//
-//        db.insert(DBContract.Location.TABLE_NAME, null, values);
+            values.put(DBContract.Location._ID, arrRecords[i][0]);
+            values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, arrRecords[i][1]);
+            values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, arrRecords[i][2]);
+            values.put(DBContract.Location.COLUMN_NAME_LATITUDE, arrRecords[i][3]);
+            values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, arrRecords[i][4]);
+
+            db.insert(DBContract.Location.TABLE_NAME, null, values);
+
+        }
 /*
 1 fbhnWIJJCyY 1499137826465 55.4219 37.7711
 2 fbhnWIJJCyY 1499137826465 55.4219 37.7711
@@ -153,5 +148,18 @@ public class DBHelper extends SQLiteOpenHelper {
 15 fbhnWIJJCyY 1499154189734 55.2095 36.9609
 16 fbhnWIJJCyY 1499167567159 55.2095 36.9609
 */
+    }
+
+    public String getStatistics() {
+        StringBuilder result = new StringBuilder();
+
+        result.append("\n\n");
+        result.append("Колличество записей в таблице " + DBContract.Device.TABLE_NAME + ": "
+                + countRecords(DBContract.Device.TABLE_NAME));
+        result.append("\n\n");
+        result.append("Колличество записей в таблице " + DBContract.Location.TABLE_NAME + ": "
+                + countRecords(DBContract.Location.TABLE_NAME));
+
+        return result.toString();
     }
 }

@@ -37,17 +37,11 @@ public class MenuActivity extends AppCompatActivity {
                     dashboard();
                     return true;
                 case R.id.navigation_notifications:
-                    Notifications();
-
-                    if(mDevice.getLocation() != null) {
-                        sqliteDB.saveDeviceLocation(mDevice, mDevice.getLocation());
-                        mTextMessage.setText("Location saved...");
-                    }
-                    else {
-                        Log.i("RELE", "No location for save!");
-                    }
-
-
+                    notifications();
+                    saveLocation();
+                    return true;
+                case R.id.navigation_db_statistics:
+                    startDBStatisticsActivity();
                     return true;
             }
             return false;
@@ -55,7 +49,7 @@ public class MenuActivity extends AppCompatActivity {
 
     };
 
-    private void Notifications() {
+    private void notifications() {
         mTextMessage.setText(R.string.title_notifications);
     }
 
@@ -85,10 +79,6 @@ public class MenuActivity extends AppCompatActivity {
         mDevice = new Device(this);
         mDevice.setNickName("ReLe");
         mDevice.spotLocation(this);
-
-        mTextMessage.setText("Total count in Location table: " + Integer.toString(sqliteDB.countLocationRecords()));
-
-        sqliteDB.loadData();
     }
 
     @Override
@@ -108,15 +98,12 @@ public class MenuActivity extends AppCompatActivity {
                 dashboard();
                 return true;
             case R.id.navigation_notifications:
-                Notifications();
-                if(mDevice.getLocation() != null) {
-                    sqliteDB.saveDeviceLocation(mDevice, mDevice.getLocation());
-                    mTextMessage.setText("Location saved...");
-                }
-                else {
-                    Log.i("RELE", "No location for save!");
-                }
+                notifications();
+                saveLocation();
 
+                return true;
+            case R.id.navigation_db_statistics:
+                startDBStatisticsActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -131,5 +118,20 @@ public class MenuActivity extends AppCompatActivity {
                 }
                 break;
         }
+    }
+
+    private void saveLocation() {
+        if(mDevice.getLocation() != null) {
+            sqliteDB.saveDeviceLocation(mDevice, mDevice.getLocation());
+            mTextMessage.setText("Location saved...");
+        }
+        else {
+            mTextMessage.setText("No location for save!");
+        }
+    }
+
+    private void startDBStatisticsActivity() {
+        Intent intent = new Intent(this, DBActivity.class);
+        startActivity(intent);
     }
 }

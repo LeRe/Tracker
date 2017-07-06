@@ -19,6 +19,7 @@
         </activity>
 
         <activity android:name=".activity.MapActivity" />
+        <activity android:name=".activity.DBActivity" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
