@@ -1,5 +1,5 @@
             var placemark = new ymaps.Placemark(myMap.getCenter(), {
-                balloonContent: '$NICK_NAME$'
+                balloonContent: '$BALLOON_CONTENT$'
             }, {
                 iconColor: '$ICON_COLOR$'
             });

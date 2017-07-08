@@ -35,12 +35,14 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void saveDeviceLocation(Device device, Location location) {
+    public void saveDeviceLocation(Device device) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        Location location = device.getLocation();
 
         ContentValues values = new ContentValues();
         values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, device.getId());
-        values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, device.getLocation().getTime());
+        values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, location.getTime());
         values.put(DBContract.Location.COLUMN_NAME_LATITUDE, location.getLatitude());
         values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, location.getLongitude());
 

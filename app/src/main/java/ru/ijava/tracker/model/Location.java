@@ -11,6 +11,12 @@ public class Location implements Serializable {
     private double longitude;
     private long time;
 
+    public Location(double latitude, double longitude, long time) {
+        setLatitude(latitude);
+        setLongitude(longitude);
+        setTime(time);
+    }
+
     public long getTime() {
         return time;
     }

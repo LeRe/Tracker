@@ -6,23 +6,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import ru.ijava.tracker.R;
-import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
+import ru.ijava.tracker.model.PositionSystem;
 
 public class MenuActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     private TextView mTextMessage;
-    private Device mDevice;
-
-    DBHelper sqliteDB = new DBHelper(this);
+    private Device device;
+    PositionSystem positionSystem;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -35,10 +33,10 @@ public class MenuActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_dashboard:
                     dashboard();
+                    startMapActivity();
                     return true;
                 case R.id.navigation_notifications:
                     notifications();
-                    saveLocation();
                     return true;
                 case R.id.navigation_db_statistics:
                     startDBStatisticsActivity();
@@ -55,10 +53,6 @@ public class MenuActivity extends AppCompatActivity {
 
     private void dashboard() {
         mTextMessage.setText(R.string.title_dashboard);
-
-        Intent intent = new Intent(this, MapActivity.class);
-        intent.putExtra(MapActivity.DEVICE_KEY, mDevice);
-        startActivity(intent);
     }
 
     private void home() {
@@ -74,11 +68,8 @@ public class MenuActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
-
-        mDevice = new Device(this);
-        mDevice.setNickName("ReLe");
-        mDevice.spotLocation(this);
+        device = new Device(this);
+        positionSystem = new PositionSystem(this, device);
     }
 
     @Override
@@ -96,11 +87,10 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_dashboard:
                 dashboard();
+                startMapActivity();
                 return true;
             case R.id.navigation_notifications:
                 notifications();
-                saveLocation();
-
                 return true;
             case R.id.navigation_db_statistics:
                 startDBStatisticsActivity();
@@ -114,24 +104,20 @@ public class MenuActivity extends AppCompatActivity {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mDevice.spotLocation(this);
+                    positionSystem.determineCurrentLocation();
                 }
                 break;
         }
     }
 
-    private void saveLocation() {
-        if(mDevice.getLocation() != null) {
-            sqliteDB.saveDeviceLocation(mDevice, mDevice.getLocation());
-            mTextMessage.setText("Location saved...");
-        }
-        else {
-            mTextMessage.setText("No location for save!");
-        }
-    }
-
     private void startDBStatisticsActivity() {
         Intent intent = new Intent(this, DBActivity.class);
+        startActivity(intent);
+    }
+
+    private void startMapActivity() {
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra(MapActivity.DEVICE_KEY, device);
         startActivity(intent);
     }
 }

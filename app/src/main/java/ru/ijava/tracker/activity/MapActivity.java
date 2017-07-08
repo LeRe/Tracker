@@ -8,6 +8,7 @@ import android.webkit.WebView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.model.Device;
@@ -19,7 +20,7 @@ public class MapActivity extends AppCompatActivity {
     public static final String DEVICE_KEY = "device_key";
     public static final String LATITUDE_PATTERN = "$LATITUDE$";
     public static final String LONGITUDE_PATTERN = "$LONGITUDE$";
-    public static final String NICK_NAME_PATTERN = "$NICK_NAME$";
+    public static final String BALLOON_CONTENT_PATTERN = "$BALLOON_CONTENT$";
     public static final String ICON_COLOR_PATTERN = "$ICON_COLOR$";
     public static final String BALLOON_PATTERN = "$BALLOON$";
 
@@ -32,7 +33,7 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
 
         Bundle bundle = getIntent().getExtras();
-        Device mDevice = (Device) bundle.getSerializable(DEVICE_KEY);
+        Device device = (Device) bundle.getSerializable(DEVICE_KEY);
 
         WebView myWebView = (WebView) findViewById(R.id.webView);
         WebSettings webSettings = myWebView.getSettings();
@@ -41,12 +42,13 @@ public class MapActivity extends AppCompatActivity {
         String htmlText = readAsset("index.html");
         String balloonJS = readAsset("balloon.js");
 
-        if(mDevice.getLocation() != null) {
-            htmlText = htmlText.replace(LATITUDE_PATTERN, Double.toString(mDevice.getLocation().getLatitude()));
-            htmlText = htmlText.replace(LONGITUDE_PATTERN, Double.toString(mDevice.getLocation().getLongitude()));
+        if(device != null && device.getLocation() != null) {
+            htmlText = htmlText.replace(LATITUDE_PATTERN, Double.toString(device.getLocation().getLatitude()));
+            htmlText = htmlText.replace(LONGITUDE_PATTERN, Double.toString(device.getLocation().getLongitude()));
 
             htmlText = htmlText.replace(BALLOON_PATTERN, balloonJS);
-            htmlText = htmlText.replace(NICK_NAME_PATTERN, mDevice.getNickName());
+            htmlText = htmlText.replace(BALLOON_CONTENT_PATTERN,
+                    device.getNickName() + "<BR>" + new Date(device.getLocation().getTime()));
             htmlText = htmlText.replace(ICON_COLOR_PATTERN, "Blue");
         }
         else {

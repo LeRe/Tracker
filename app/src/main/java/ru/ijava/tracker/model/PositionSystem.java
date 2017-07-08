@@ -10,14 +10,15 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import ru.ijava.tracker.activity.MenuActivity;
+import ru.ijava.tracker.db.DBHelper;
 
 /**
  * Created by rele on 7/7/17.
  */
 
 public class PositionSystem {
-    Activity activity;
-    Location currentLocation;
+    private Activity activity;
+    Device device;
     //TODO Сюда же должен быть передан Device позицию которого мы определяем,
     // свойство currentLocation будет ненужно, определенную широту и долготу будем сохранять в устройство
     // за которым следим
@@ -25,11 +26,11 @@ public class PositionSystem {
     // устройство определено
 
 
-    public PositionSystem(Activity activity) {
+    public PositionSystem(Activity activity, Device device) {
         this.activity = activity;
+        this.device = device;
 
         determineCurrentLocation();
-
     }
 
     public void determineCurrentLocation() {
@@ -41,22 +42,27 @@ public class PositionSystem {
                     MenuActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         else {
-
             FusedLocationProviderClient fusedLocationClient;
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
             fusedLocationClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<android.location.Location>() {
                 @Override
                 public void onSuccess(android.location.Location location) {
-                    if (location != null) {
-                        currentLocation = new Location();
-                        currentLocation.setLatitude(location.getLatitude());
-                        currentLocation.setLongitude(location.getLongitude());
-                        currentLocation.setTime(location.getTime());
+                    if (location != null && device != null) {
+                        device.setLocation(
+                                new Location(
+                                        location.getLatitude(), location.getLongitude(), location.getTime())
+                        );
+                        saveLocationToDB(device);
                     }
                 }
             });
-
         }
     }
 
+    private void saveLocationToDB(Device device) {
+        if(device.getLocation() != null) {
+            DBHelper sqliteDB = new DBHelper(activity);
+            sqliteDB.saveDeviceLocation(device);
+        }
+    }
 }

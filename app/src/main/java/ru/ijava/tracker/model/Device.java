@@ -31,7 +31,6 @@ public class Device implements Serializable {
 
         //TODO read nickName from preferences
         setNickName("PreferenceRELE");
-
     }
 
     public Device(String id, String nickName) {
@@ -61,33 +60,5 @@ public class Device implements Serializable {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public void spotLocation(Activity activity) {
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MenuActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-        else {
-            final Device device = this;
-
-            FusedLocationProviderClient fusedLocationClient;
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
-            fusedLocationClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<android.location.Location>() {
-                @Override
-                public void onSuccess(android.location.Location location) {
-                    if (location != null) {
-                        ru.ijava.tracker.model.Location deviceLocation = new ru.ijava.tracker.model.Location();
-                        deviceLocation.setLatitude(location.getLatitude());
-                        deviceLocation.setLongitude(location.getLongitude());
-                        deviceLocation.setTime(location.getTime());
-                        device.setLocation(deviceLocation);
-                    }
-                }
-            });
-        }
     }
 }
