@@ -66,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public void dumpTables() {
+    public void dumpTables2Log() {
         SQLiteDatabase db = this.getReadableDatabase();
 
         dumpTable2Log(db, DBContract.Device.TABLE_NAME);
@@ -97,7 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void loadData() {
+    public void loadExampleData() {
         SQLiteDatabase db = this.getWritableDatabase();
         onUpgrade(db, 0, 0); //Clear tables
 

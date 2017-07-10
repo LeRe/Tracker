@@ -17,9 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activity.MapActivity" />
         <activity android:name=".activity.DBActivity" />
+        <service android:name=".model.TrackerService"
+            android:exported="false"
+            />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

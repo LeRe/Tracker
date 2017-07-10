@@ -31,7 +31,7 @@ public class DBActivity extends AppCompatActivity {
         buttonLoadData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sqliteDB.loadData();
+                sqliteDB.loadExampleData();
                 showDBStatistics();
             }
         });

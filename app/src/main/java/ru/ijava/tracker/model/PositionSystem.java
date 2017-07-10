@@ -19,12 +19,6 @@ import ru.ijava.tracker.db.DBHelper;
 public class PositionSystem {
     private Activity activity;
     Device device;
-    //TODO Сюда же должен быть передан Device позицию которого мы определяем,
-    // свойство currentLocation будет ненужно, определенную широту и долготу будем сохранять в устройство
-    // за которым следим
-    // свойство currentLocation должно переехать в Device и если оно не нулл значит текущее место положение
-    // устройство определено
-
 
     public PositionSystem(Activity activity, Device device) {
         this.activity = activity;
