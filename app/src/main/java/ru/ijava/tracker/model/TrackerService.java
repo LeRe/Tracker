@@ -1,10 +1,16 @@
 package ru.ijava.tracker.model;
 
+import android.Manifest;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.IBinder;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,14 +33,31 @@ public class TrackerService extends Service {
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                Device device = new Device(getApplicationContext());
+                Context context = getApplicationContext();
+                Device device = new Device(context);
 
-                //PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
-                device.setLocation(new Location(55.4219, 37.7711, 1499137826465l));
+                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+
+                ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
+                device.setLocation(new Location(
+                        lastKnownLocation.getLatitude(),
+                        lastKnownLocation.getLongitude(),
+                        lastKnownLocation.getTime()));
 
                 DBHelper sqliteDB = new DBHelper(getApplicationContext());
                 sqliteDB.saveDeviceLocation(device);
-
             }
         };
 

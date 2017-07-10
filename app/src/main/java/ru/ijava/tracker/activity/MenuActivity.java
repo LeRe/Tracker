@@ -14,6 +14,7 @@ import android.widget.TextView;
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.PositionSystem;
+import ru.ijava.tracker.model.TrackerService;
 
 public class MenuActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -70,6 +71,11 @@ public class MenuActivity extends AppCompatActivity {
 
         device = new Device(this);
         positionSystem = new PositionSystem(this, device);
+
+
+        //start service
+        Intent intent = new Intent(this, TrackerService.class);
+        startService(intent);
     }
 
     @Override

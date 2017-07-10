@@ -24,6 +24,7 @@ public class DBActivity extends AppCompatActivity {
         setContentView(R.layout.activity_db);
 
         Button buttonLoadData = (Button) findViewById(R.id.button_load_db_data);
+        Button buttonClearData = (Button) findViewById(R.id.button_clear_db);
         dbStatisticsTextView = (TextView) findViewById(R.id.textView_db_statistics);
 
         sqliteDB = new DBHelper(this);
@@ -32,6 +33,14 @@ public class DBActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sqliteDB.loadExampleData();
+                showDBStatistics();
+            }
+        });
+
+        buttonClearData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sqliteDB.clearDataBase();
                 showDBStatistics();
             }
         });

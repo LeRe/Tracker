@@ -164,4 +164,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return result.toString();
     }
+
+    public void clearDataBase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        onUpgrade(db, 0, 0);
+    }
 }
