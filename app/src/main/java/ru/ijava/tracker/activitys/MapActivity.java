@@ -1,4 +1,4 @@
-package ru.ijava.tracker.activity;
+package ru.ijava.tracker.activitys;
 
 
 import android.os.Bundle;
@@ -32,8 +32,12 @@ public class MapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+
         Bundle bundle = getIntent().getExtras();
-        Device device = (Device) bundle.getSerializable(DEVICE_KEY);
+        Device device = null;
+        if (bundle != null) {
+            device = (Device) bundle.getSerializable(DEVICE_KEY);
+        }
 
         WebView myWebView = (WebView) findViewById(R.id.webView);
         WebSettings webSettings = myWebView.getSettings();

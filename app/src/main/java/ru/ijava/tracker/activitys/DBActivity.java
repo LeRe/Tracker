@@ -1,4 +1,4 @@
-package ru.ijava.tracker.activity;
+package ru.ijava.tracker.activitys;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

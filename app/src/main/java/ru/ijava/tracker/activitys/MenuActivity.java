@@ -1,4 +1,4 @@
-package ru.ijava.tracker.activity;
+package ru.ijava.tracker.activitys;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -71,6 +71,7 @@ public class MenuActivity extends AppCompatActivity {
 
         device = new Device(this);
         positionSystem = new PositionSystem(this, device);
+
 
 
         //start service

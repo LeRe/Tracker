@@ -9,7 +9,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import ru.ijava.tracker.activity.MenuActivity;
+import ru.ijava.tracker.activitys.MenuActivity;
 import ru.ijava.tracker.db.DBHelper;
 
 /**
