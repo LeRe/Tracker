@@ -19,7 +19,10 @@ import ru.ijava.tracker.model.TrackerService;
 public class MenuActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-    private TextView mTextMessage;
+    public static final int POSITIONS_LAST = 0;
+    public static final int POSITIONS_ALL = 1;
+
+    //private TextView mTextMessage;
     private Device device;
     PositionSystem positionSystem;
 
@@ -34,7 +37,7 @@ public class MenuActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_dashboard:
                     dashboard();
-                    startMapActivity();
+                    //startMapActivity();
                     return true;
                 case R.id.navigation_notifications:
                     notifications();
@@ -49,15 +52,15 @@ public class MenuActivity extends AppCompatActivity {
     };
 
     private void notifications() {
-        mTextMessage.setText(R.string.title_notifications);
+        //mTextMessage.setText(R.string.title_notifications);
     }
 
     private void dashboard() {
-        mTextMessage.setText(R.string.title_dashboard);
+        //mTextMessage.setText(R.string.title_dashboard);
     }
 
     private void home() {
-        mTextMessage.setText(R.string.title_home);
+        //mTextMessage.setText(R.string.title_home);
     }
 
     @Override
@@ -65,13 +68,12 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+        //mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         device = new Device(this);
         positionSystem = new PositionSystem(this, device);
-
 
 
         //start service
@@ -94,7 +96,7 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_dashboard:
                 dashboard();
-                startMapActivity();
+                //startMapActivity();
                 return true;
             case R.id.navigation_notifications:
                 notifications();
@@ -122,9 +124,27 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void startMapActivity() {
+    public void startMapActivity() {
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(MapActivity.DEVICE_KEY, device);
         startActivity(intent);
+    }
+
+    public void changeRequestedPositions(int positionsId) {
+        if (positionsId == POSITIONS_LAST)
+        {
+            // извлечем из базы и положим в объект  девайс последнюю позицию
+            // класть будем в список вывода
+            // при отображении на карте потом будем определять
+            //если позиция в списке одна отображаем ее как единственную (последнюю)
+            //если не одна - строим маршрут из позиций
+        }
+        else if (positionsId == POSITIONS_ALL)
+        {
+            // извлекаем из базы энное количество позиций удовлетворяющих условию
+            // кладем их также в список вывода принадлежащий объекту Девисе,
+            // на их основе будем строить маршрут
+
+        }
     }
 }
