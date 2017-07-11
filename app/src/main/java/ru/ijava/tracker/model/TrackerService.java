@@ -7,10 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,7 +49,7 @@ public class TrackerService extends Service {
                 android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
                 ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
-                device.setLocation(new Location(
+                device.setCurrentLocation(new Location(
                         lastKnownLocation.getLatitude(),
                         lastKnownLocation.getLongitude(),
                         lastKnownLocation.getTime()));

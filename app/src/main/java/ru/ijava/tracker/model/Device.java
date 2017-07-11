@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.android.gms.iid.InstanceID;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by levchenko on 22.06.2017.
@@ -13,7 +14,19 @@ import java.io.Serializable;
 public class Device implements Serializable {
     private String id;
     private String nickName;
-    private Location location;
+    private Location currentLocation;
+    private ArrayList<Location> locationsHistory;
+
+    public void putLocation2History(Location location) {
+        if(this.locationsHistory == null) {
+            initializeLocationsHistory();
+        }
+        this.locationsHistory.add(location);
+    }
+
+    public void initializeLocationsHistory() {
+        this.locationsHistory = new ArrayList<Location>();
+    }
 
     public Device(Context context) {
         String iid = InstanceID.getInstance(context).getId();
@@ -44,11 +57,11 @@ public class Device implements Serializable {
         this.nickName = nickName;
     }
 
-    public Location getLocation() {
-        return location;
+    public Location getCurrentLocation() {
+        return currentLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setCurrentLocation(Location currentLocation) {
+        this.currentLocation = currentLocation;
     }
 }

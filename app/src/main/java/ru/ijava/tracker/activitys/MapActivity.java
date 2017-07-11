@@ -46,13 +46,13 @@ public class MapActivity extends AppCompatActivity {
         String htmlText = readAsset("index.html");
         String balloonJS = readAsset("balloon.js");
 
-        if(device != null && device.getLocation() != null) {
-            htmlText = htmlText.replace(LATITUDE_PATTERN, Double.toString(device.getLocation().getLatitude()));
-            htmlText = htmlText.replace(LONGITUDE_PATTERN, Double.toString(device.getLocation().getLongitude()));
+        if(device != null && device.getCurrentLocation() != null) {
+            htmlText = htmlText.replace(LATITUDE_PATTERN, Double.toString(device.getCurrentLocation().getLatitude()));
+            htmlText = htmlText.replace(LONGITUDE_PATTERN, Double.toString(device.getCurrentLocation().getLongitude()));
 
             htmlText = htmlText.replace(BALLOON_PATTERN, balloonJS);
             htmlText = htmlText.replace(BALLOON_CONTENT_PATTERN,
-                    device.getNickName() + "<BR>" + new Date(device.getLocation().getTime()));
+                    device.getNickName() + "<BR>" + new Date(device.getCurrentLocation().getTime()));
             htmlText = htmlText.replace(ICON_COLOR_PATTERN, "Blue");
         }
         else {

@@ -42,7 +42,7 @@ public class PositionSystem {
                 @Override
                 public void onSuccess(android.location.Location location) {
                     if (location != null && device != null) {
-                        device.setLocation(
+                        device.setCurrentLocation(
                                 new Location(
                                         location.getLatitude(), location.getLongitude(), location.getTime())
                         );
@@ -54,7 +54,7 @@ public class PositionSystem {
     }
 
     private void saveLocationToDB(Device device) {
-        if(device.getLocation() != null) {
+        if(device.getCurrentLocation() != null) {
             DBHelper sqliteDB = new DBHelper(activity);
             sqliteDB.saveDeviceLocation(device);
         }

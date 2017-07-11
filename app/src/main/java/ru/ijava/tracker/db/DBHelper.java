@@ -38,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void saveDeviceLocation(Device device) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Location location = device.getLocation();
+        Location location = device.getCurrentLocation();
 
         ContentValues values = new ContentValues();
         values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, device.getId());
@@ -96,6 +96,9 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.i("RELE", "Table " + tableName + " empty");
         }
     }
+
+    //TODO Метод извлекающий местоположения из базы по id devic'a и складывающий эти местоположения в Аррэй лист девайсу, сортировать можно после складывания отсюда же
+
 
     public void loadExampleData() {
         SQLiteDatabase db = this.getWritableDatabase();
