@@ -134,7 +134,6 @@ public class MenuActivity extends AppCompatActivity {
     public void loadRequestedPositions(int positionsId) {
         device.initializeLocationsHistory();
         DBHelper sqliteDB = new DBHelper(this);
-        sqliteDB.getDeviceLocationsHistory(device);
 
         if (positionsId == POSITIONS_LAST)
         {
@@ -143,12 +142,14 @@ public class MenuActivity extends AppCompatActivity {
             // при отображении на карте потом будем определять
             //если позиция в списке одна отображаем ее как единственную (последнюю)
             //если не одна - строим маршрут из позиций
+            sqliteDB.getDeviceLastLocation(device);
         }
         else if (positionsId == POSITIONS_ALL)
         {
             // извлекаем из базы энное количество позиций удовлетворяющих условию
             // кладем их также в список вывода принадлежащий объекту Девисе,
             // на их основе будем строить маршрут
+            sqliteDB.getDeviceLocationsHistory(device);
 
         }
     }

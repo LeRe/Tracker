@@ -35,6 +35,37 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void getDeviceLastLocation(Device device) {
+        String deviceId = device.getId();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = { DBContract.Location.COLUMN_NAME_LATITUDE,
+                DBContract.Location.COLUMN_NAME_LONGITUDE,
+                DBContract.Location.COLUMN_NAME_TIMESTAMP };
+
+        String selection = DBContract.Location.COLUMN_NAME_DEVICE_ID + " = ?";
+        String[] selectionArgs = { deviceId };
+
+        String sortOrder = DBContract.Location.COLUMN_NAME_TIMESTAMP + " DESC";
+
+        String limit = "1";
+
+        Cursor cursor = db.query(false, DBContract.Location.TABLE_NAME, columns,
+                selection, selectionArgs, null, null, sortOrder, limit);
+
+        if ( cursor != null ) {
+            cursor.moveToFirst();
+            double latitude = cursor.getDouble(0);
+            double longitude = cursor.getDouble(1);
+            long timestamp = cursor.getLong(2);
+            Location location = new Location(latitude, longitude, timestamp);
+            device.putLocationToHistory(location);
+        }
+        cursor.close();
+        db.close();
+    }
+
     public void getDeviceLocationsHistory(Device device) {
         String deviceId = device.getId();
 
@@ -132,23 +163,18 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         onUpgrade(db, 0, 0); //Clear tables
 
+        String deviceID = "f-5mSb0YL2w";
+
         String[][] arrRecords = {
-            {"1", "fbhnWIJJCyY", "1499137826465", "55.4219", "37.7711"},
-            {"2", "fbhnWIJJCyY", "1499137826465", "55.4219", "37.7711"},
-            {"3", "fbhnWIJJCyY", "1499137826465", "55.4219", "37.7711"},
-            {"4", "fbhnWIJJCyY", "1499138180917", "55.4219", "37.771"},
-            {"5", "fbhnWIJJCyY", "1499140074791", "55.4259", "37.7673"},
-            {"6", "fbhnWIJJCyY", "1499140167422", "55.4219", "37.771"},
-            {"7", "fbhnWIJJCyY", "1499140377727", "55.4219", "37.771"},
-            {"8", "fbhnWIJJCyY", "1499143442071", "55.4397", "37.7496"},
-            {"9", "fbhnWIJJCyY", "1499145574256", "55.428", "37.7708"},
-            {"10", "fbhnWIJJCyY", "1499145877576", "55.4048", "37.784"},
-            {"11", "fbhnWIJJCyY", "1499146447615", "55.3338", "37.7298"},
-            {"12", "fbhnWIJJCyY", "1499152267238", "55.171", "37.3443"},
-            {"13", "fbhnWIJJCyY", "1499153647243", "55.2162", "36.984"},
-            {"14", "fbhnWIJJCyY", "1499154189734", "55.2095", "36.9609"},
-            {"15", "fbhnWIJJCyY", "1499154189734", "55.2095", "36.9609"},
-            {"16", "fbhnWIJJCyY", "1499167567159", "55.2095", "36.9609"}
+            {"1", deviceID, "1499137826465", "55.4219", "37.7711"},
+            {"2", deviceID, "1499140074791", "55.4259", "37.7673"},
+            {"3", deviceID, "1499143442071", "55.4397", "37.7496"},
+            {"4", deviceID, "1499145574256", "55.428", "37.7708"},
+            {"5", deviceID, "1499145877576", "55.4048", "37.784"},
+            {"6", deviceID, "1499146447615", "55.3338", "37.7298"},
+            {"7", deviceID, "1499152267238", "55.171", "37.3443"},
+            {"8", deviceID, "1499153647243", "55.2162", "36.984"},
+            {"9", deviceID, "1499154189734", "55.2095", "36.9609"},
         };
 
         for (int i = 0; i < arrRecords.length; i++) {
