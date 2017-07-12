@@ -1,7 +1,6 @@
 package ru.ijava.tracker.fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.Button;
 import android.widget.RadioButton;
 
 import ru.ijava.tracker.R;
-import ru.ijava.tracker.activitys.MapActivity;
 import ru.ijava.tracker.activitys.MenuActivity;
 
 /**
@@ -51,11 +49,11 @@ public class DetailSelection extends Fragment {
 
         if (rbLastPosition.isChecked())
         {
-            menuActivity.changeRequestedPositions(menuActivity.POSITIONS_LAST);
+            menuActivity.loadRequestedPositions(menuActivity.POSITIONS_LAST);
         }
         else if (rbAllPositions.isChecked())
         {
-            menuActivity.changeRequestedPositions(menuActivity.POSITIONS_ALL);
+            menuActivity.loadRequestedPositions(menuActivity.POSITIONS_ALL);
         }
 
     }

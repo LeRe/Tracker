@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import ru.ijava.tracker.R;
+import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.PositionSystem;
 import ru.ijava.tracker.model.TrackerService;
@@ -130,7 +131,11 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void changeRequestedPositions(int positionsId) {
+    public void loadRequestedPositions(int positionsId) {
+        device.initializeLocationsHistory();
+        DBHelper sqliteDB = new DBHelper(this);
+        sqliteDB.getDeviceLocationsHistory(device);
+
         if (positionsId == POSITIONS_LAST)
         {
             // извлечем из базы и положим в объект  девайс последнюю позицию

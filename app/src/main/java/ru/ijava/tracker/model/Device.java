@@ -1,5 +1,6 @@
 package ru.ijava.tracker.model;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.google.android.gms.iid.InstanceID;
@@ -17,11 +18,16 @@ public class Device implements Serializable {
     private Location currentLocation;
     private ArrayList<Location> locationsHistory;
 
-    public void putLocation2History(Location location) {
+    public void putLocationToHistory(Location location) {
         if(this.locationsHistory == null) {
             initializeLocationsHistory();
         }
         this.locationsHistory.add(location);
+    }
+
+    public ArrayList<Location> getLocationsHistory() {
+        //TODO Сделать сортировку по времени
+        return locationsHistory;
     }
 
     public void initializeLocationsHistory() {

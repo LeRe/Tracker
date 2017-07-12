@@ -35,6 +35,34 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void getDeviceLocationsHistory(Device device) {
+        String deviceId = device.getId();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String[] columns = { DBContract.Location.COLUMN_NAME_LATITUDE,
+                DBContract.Location.COLUMN_NAME_LONGITUDE,
+                DBContract.Location.COLUMN_NAME_TIMESTAMP };
+
+        String selection = DBContract.Location.COLUMN_NAME_DEVICE_ID + " = ?";
+        String[] selectionArgs = { deviceId };
+
+        Cursor cursor = db.query(false, DBContract.Location.TABLE_NAME, columns,
+                selection, selectionArgs, null, null,null, null);
+
+        if ( cursor != null ) {
+            while ( cursor.moveToNext() ) {
+                double latitude = cursor.getDouble(0);
+                double longitude = cursor.getDouble(1);
+                long timestamp = cursor.getLong(2);
+                Location location = new Location(latitude, longitude, timestamp);
+                device.putLocationToHistory(location);
+            }
+        }
+        cursor.close();
+        db.close();
+    }
+
     public void saveDeviceLocation(Device device) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -66,16 +94,16 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public void dumpTables2Log() {
+    public void dumpTablesToLog() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        dumpTable2Log(db, DBContract.Device.TABLE_NAME);
-        dumpTable2Log(db, DBContract.Location.TABLE_NAME);
+        dumpTableToLog(db, DBContract.Device.TABLE_NAME);
+        dumpTableToLog(db, DBContract.Location.TABLE_NAME);
 
         db.close();
     }
 
-    private void dumpTable2Log(SQLiteDatabase db, String tableName) {
+    private void dumpTableToLog(SQLiteDatabase db, String tableName) {
         Cursor cursor = db.rawQuery("select * from " + tableName, null);
         if (cursor != null && cursor.moveToFirst()) {
             int countRows = cursor.getCount();
