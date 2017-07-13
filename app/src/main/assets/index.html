@@ -6,9 +6,9 @@
     <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     <meta name="viewport" content="width=device-width,height=device-height, user-scalable=no" />
     <script type="text/javascript">
-        var myMap;
+        var trackerMap;
         ymaps.ready(function () {
-            myMap = new ymaps.Map('map', {
+            trackerMap = new ymaps.Map('map', {
                 center: [$LATITUDE$, $LONGITUDE$],
                 zoom: $ZOOM$
             });
@@ -23,7 +23,7 @@
             padding: 0;
         }
         #map {
-            background-color: black;
+            background-color: white;
         }
     </style>
 </head>

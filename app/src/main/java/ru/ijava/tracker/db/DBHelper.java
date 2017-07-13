@@ -159,11 +159,11 @@ public class DBHelper extends SQLiteOpenHelper {
     //TODO Метод извлекающий местоположения из базы по id devic'a и складывающий эти местоположения в Аррэй лист девайсу, сортировать можно после складывания отсюда же
 
 
-    public void loadExampleData() {
+    public void loadExampleData(Device device) {
         SQLiteDatabase db = this.getWritableDatabase();
         onUpgrade(db, 0, 0); //Clear tables
 
-        String deviceID = "f-5mSb0YL2w";
+        String deviceID = device.getId();
 
         String[][] arrRecords = {
             {"1", deviceID, "1499137826465", "55.4219", "37.7711"},

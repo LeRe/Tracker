@@ -9,12 +9,16 @@ import android.widget.TextView;
 
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
+import ru.ijava.tracker.model.Device;
 
 /**
  * Created by rele on 7/6/17.
  */
 
 public class DBActivity extends AppCompatActivity {
+    public static final String DEVICE_KEY = "device_key";
+
+    Device device;
     DBHelper sqliteDB;
     TextView dbStatisticsTextView;
 
@@ -22,6 +26,12 @@ public class DBActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_db);
+
+        Bundle bundle = getIntent().getExtras();
+        device = null;
+        if (bundle != null) {
+            device = (Device) bundle.getSerializable(DEVICE_KEY);
+        }
 
         Button buttonLoadData = (Button) findViewById(R.id.button_load_db_data);
         Button buttonClearData = (Button) findViewById(R.id.button_clear_db);
@@ -32,7 +42,7 @@ public class DBActivity extends AppCompatActivity {
         buttonLoadData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sqliteDB.loadExampleData();
+                sqliteDB.loadExampleData(device);
                 showDBStatistics();
             }
         });

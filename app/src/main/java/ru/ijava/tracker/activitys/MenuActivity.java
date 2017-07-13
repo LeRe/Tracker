@@ -122,6 +122,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void startDBStatisticsActivity() {
         Intent intent = new Intent(this, DBActivity.class);
+        intent.putExtra(MapActivity.DEVICE_KEY, device);
         startActivity(intent);
     }
 
