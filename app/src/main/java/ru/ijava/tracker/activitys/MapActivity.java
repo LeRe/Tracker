@@ -8,6 +8,8 @@ import android.webkit.WebView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import ru.ijava.tracker.R;
@@ -50,19 +52,19 @@ public class MapActivity extends AppCompatActivity {
             device = (Device) bundle.getSerializable(DEVICE_KEY);
         }
 
-        WebView myWebView = (WebView) findViewById(R.id.webView);
-        WebSettings webSettings = myWebView.getSettings();
+        WebView webView = (WebView) findViewById(R.id.webView);
+        WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
         String indexHtml = readAsset("index.html");
         String balloonJS = readAsset("balloon.js");
         String polylineJS = readAsset("polyline.js");
 
-        int mapZoom = DEFAULT_MAP_ZOOM;
-
         ArrayList<Location> locationsHistory = device.getLocationsHistory();
-        if(device != null && locationsHistory != null) {
+        Collections.sort(locationsHistory, Location.comparator);
 
+
+        if(device != null && locationsHistory != null) {
             StringBuilder balloonsCode = new StringBuilder();
             StringBuilder polylineCoordinates = new StringBuilder();
             polylineCoordinates.append("[");
@@ -91,7 +93,6 @@ public class MapActivity extends AppCompatActivity {
             double centerLatitude = DEFAULT_CENTER_LATITUDE;
             double centerLongitude = DEFAULT_CENTER_LONGITUDE;
             if(device.getLocationsHistory().size() == ONLY_ONE_LOCATION) {
-                mapZoom = ZOOM_ONE_LOCATION;
                 centerLatitude = device.getLocationsHistory().get(FIRST_ELEMENT_INDEX).getLatitude();
                 centerLongitude = device.getLocationsHistory().get(FIRST_ELEMENT_INDEX).getLongitude();
             }
@@ -106,9 +107,10 @@ public class MapActivity extends AppCompatActivity {
         }
 
         //set map zoom
-        indexHtml = indexHtml.replace(MAP_ZOOM_PATTERN, Integer.toString(mapZoom));
+        int zoomMap = determineScale(locationsHistory);
+        indexHtml = indexHtml.replace(MAP_ZOOM_PATTERN, Integer.toString(zoomMap));
 
-        myWebView.loadDataWithBaseURL(
+        webView.loadDataWithBaseURL(
                 "http://ru.yandex.api.yandexmapswebviewexample.ymapapp",
                 indexHtml,
                 "text/html",
@@ -145,5 +147,20 @@ public class MapActivity extends AppCompatActivity {
         sourceCode = sourceCode.replace(ICON_COLOR_PATTERN, balloonColor);
 
         return sourceCode;
+    }
+
+    private int determineScale(ArrayList<Location> locations) {
+        int zoom = DEFAULT_MAP_ZOOM;
+        if (locations != null)
+        {
+            if(locations.size() == ONLY_ONE_LOCATION) {
+                zoom = ZOOM_ONE_LOCATION;
+            }
+            else {
+                //TODO Вычисляем маштаб с учетом рассояния между точками, чтобы все вместились и не слишком мелко
+            }
+        }
+
+        return zoom;
     }
 }
