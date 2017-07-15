@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 import ru.ijava.tracker.R;
@@ -26,12 +25,15 @@ public class MapActivity extends AppCompatActivity {
     public static final String MAP_CENTER_LONGITUDE_PATTERN = "$LONGITUDE$";
     public static final String BALLOON_CONTENT_PATTERN = "$BALLOON_CONTENT$";
     public static final String ICON_COLOR_PATTERN = "$ICON_COLOR$";
-    public static final String BALLOONS_PATTERN = "$BALLOONS$";
+    public static final String GEO_OBJECTS_PATTERN = "$GEO_OBJECTS$";
     public static final String BALLOON_INDEX_PATTERN = "$BALLOON_INDEX$";
     public static final String BALLOON_LATITUDE_PATTERN = "$BALLOON_LATITUDE$";
     public static final String BALLOON_LONGITUDE_PATTERN = "$BALLOON_LONGITUDE$";
     public static final String MAP_ZOOM_PATTERN = "$ZOOM$";
     public static final String POLYLINE_COORDINATES_PATTERN = "$POLYLINE_COORDINATES$";
+
+    public static final String LAST_BALLOON_COLOR = "Blue";
+    public static final String COMMON_BALLOON_COLOR = "Grey";
 
     public static final double DEFAULT_CENTER_LATITUDE = 55.641468;
     public static final double DEFAULT_CENTER_LONGITUDE = 37.442406;
@@ -61,49 +63,34 @@ public class MapActivity extends AppCompatActivity {
         String polylineJS = readAsset("polyline.js");
 
         ArrayList<Location> locationsHistory = device.getLocationsHistory();
-        Collections.sort(locationsHistory, Location.comparator);
-
 
         if(device != null && locationsHistory != null) {
-            StringBuilder balloonsCode = new StringBuilder();
-            StringBuilder polylineCoordinates = new StringBuilder();
-            polylineCoordinates.append("[");
-            for (Location location : locationsHistory) {
-                String balloonCode = generateBalloonCode(device, location, balloonJS);
-                balloonsCode.append(balloonCode);
+            StringBuilder geoObjects = new StringBuilder();
 
-                polylineCoordinates.append("[" + location.getLatitude() + "," + location.getLongitude() + "],");
-                //generate polyline coords
-                /*
-                        [[55.80, 37.50],
-                        [55.80, 37.40],
-                        [55.70, 37.50],
-                        [55.70, 37.40]]
-                 */
-            }
-            polylineCoordinates.append("]");
-            polylineJS = polylineJS.replace(POLYLINE_COORDINATES_PATTERN, polylineCoordinates.toString());
-            //TODO polyline рисует, незабыть отсортировать координаты по таймстампу, баллуун рисуем в конечной точке другим цветом, ну и привести код генерации карты в порядок (слишком много черновых набросков)
-            balloonsCode.append(polylineJS);
-
-            indexHtml = indexHtml.replace(BALLOONS_PATTERN, balloonsCode.toString());
-
-            //TODO В перспективе необходимо центрировать карту относительно выводимых точек и выставлять маштаб карты такой чтобы все точки вписались в экран с небольши отступом по краям
-            // Набросок метода определения центра и маштаба по выводимым точкам
-            double centerLatitude = DEFAULT_CENTER_LATITUDE;
-            double centerLongitude = DEFAULT_CENTER_LONGITUDE;
-            if(device.getLocationsHistory().size() == ONLY_ONE_LOCATION) {
-                centerLatitude = device.getLocationsHistory().get(FIRST_ELEMENT_INDEX).getLatitude();
-                centerLongitude = device.getLocationsHistory().get(FIRST_ELEMENT_INDEX).getLongitude();
+            int lastIndex = locationsHistory.size() - 1;
+            String balloonColor = COMMON_BALLOON_COLOR;
+            for (int i = 0; i < locationsHistory.size(); i++) {
+                Location location = locationsHistory.get(i);
+                if(i == lastIndex) {
+                    balloonColor = LAST_BALLOON_COLOR;
+                }
+                String balloonCode = generateBalloonCode(device, location, balloonColor, balloonJS);
+                geoObjects.append(balloonCode);
             }
 
-            indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(centerLatitude));
-            indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(centerLongitude));
+            String polylineCode = generatePolylineCode(locationsHistory, polylineJS);
+            geoObjects.append(polylineCode);
+
+            indexHtml = indexHtml.replace(GEO_OBJECTS_PATTERN, geoObjects.toString());
+
+            Location centerLocation = determineCenterLocation(locationsHistory);
+            indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(centerLocation.getLatitude()));
+            indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(centerLocation.getLongitude()));
         }
         else {
             indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LATITUDE));
             indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LONGITUDE));
-            indexHtml = indexHtml.replace(BALLOONS_PATTERN, "");
+            indexHtml = indexHtml.replace(GEO_OBJECTS_PATTERN, "");
         }
 
         //set map zoom
@@ -133,18 +120,45 @@ public class MapActivity extends AppCompatActivity {
         return "";
     }
 
-    private String generateBalloonCode(Device device, Location balloonLocation, String sourceCode) {
-        double latitude = balloonLocation.getLatitude();
-        double longitude = balloonLocation.getLongitude();
-        long timestamp = balloonLocation.getTime();
-        String balloonContent = device.getNickName() + "<BR>" + new Date(timestamp);
-        String balloonColor = "Blue";
+    private String generateBalloonCode(Device device, Location balloonLocation, String balloonColor, String sourceCode) {
+        if(device != null && balloonLocation != null) {
+            double latitude = balloonLocation.getLatitude();
+            double longitude = balloonLocation.getLongitude();
+            long timestamp = balloonLocation.getTime();
+            String balloonContent = device.getNickName() + "<BR>" + new Date(timestamp);
 
-        sourceCode = sourceCode.replace(BALLOON_INDEX_PATTERN, Long.toString(timestamp));
-        sourceCode = sourceCode.replace(BALLOON_LATITUDE_PATTERN, Double.toString(latitude));
-        sourceCode = sourceCode.replace(BALLOON_LONGITUDE_PATTERN, Double.toString(longitude));
-        sourceCode = sourceCode.replace(BALLOON_CONTENT_PATTERN, balloonContent);
-        sourceCode = sourceCode.replace(ICON_COLOR_PATTERN, balloonColor);
+            sourceCode = sourceCode.replace(BALLOON_INDEX_PATTERN, Long.toString(timestamp));
+            sourceCode = sourceCode.replace(BALLOON_LATITUDE_PATTERN, Double.toString(latitude));
+            sourceCode = sourceCode.replace(BALLOON_LONGITUDE_PATTERN, Double.toString(longitude));
+            sourceCode = sourceCode.replace(BALLOON_CONTENT_PATTERN, balloonContent);
+            sourceCode = sourceCode.replace(ICON_COLOR_PATTERN, balloonColor);
+        }
+        else
+        {
+            return "";
+        }
+
+        return sourceCode;
+    }
+
+    private String generatePolylineCode(ArrayList<Location> locationsHistory, String sourceCode) {
+        if(locationsHistory != null && locationsHistory.size() > 1)
+        {
+            Collections.sort(locationsHistory, Location.comparator);
+
+            StringBuilder polylineCoordinates = new StringBuilder();
+            polylineCoordinates.append("[");
+            for (Location location : locationsHistory) {
+                //generate polyline coords [[55.80, 37.50], [55.80, 37.40], [55.70, 37.50], [55.70, 37.40]]
+                polylineCoordinates.append("[" + location.getLatitude() + "," + location.getLongitude() + "],");
+            }
+            polylineCoordinates.append("]");
+            sourceCode = sourceCode.replace(POLYLINE_COORDINATES_PATTERN, polylineCoordinates.toString());
+        }
+        else
+        {
+            return "";
+        }
 
         return sourceCode;
     }
@@ -162,5 +176,21 @@ public class MapActivity extends AppCompatActivity {
         }
 
         return zoom;
+    }
+
+    //TODO В перспективе необходимо центрировать карту относительно выводимых точек и выставлять маштаб карты такой чтобы все точки вписались в экран с небольши отступом по краям
+
+    private Location determineCenterLocation(ArrayList<Location> locationHistory) {
+        // Набросок метода определения центра и маштаба по выводимым точкам
+        double centerLatitude = DEFAULT_CENTER_LATITUDE;
+        double centerLongitude = DEFAULT_CENTER_LONGITUDE;
+        if(locationHistory.size() == ONLY_ONE_LOCATION) {
+            centerLatitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
+            centerLongitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
+        }
+
+        Location location = new Location(centerLatitude, centerLongitude, 0);
+
+        return location;
     }
 }
