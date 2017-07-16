@@ -35,7 +35,7 @@ public class TrackerService extends Service {
                 Device device = new Device(context);
 
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                String locationProvider = LocationManager.GPS_PROVIDER;
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -47,6 +47,9 @@ public class TrackerService extends Service {
                     return;
                 }
                 android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+
+                //TODO Везде переходим на android.location.Location, ru.ijava.model.location теперь депрекатед!!!
+                //TODO Начинаем сохранять в базе источник места положения String getProvider () Returns the name of the provider that generated this fix.
 
                 ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
                 device.setCurrentLocation(new Location(
