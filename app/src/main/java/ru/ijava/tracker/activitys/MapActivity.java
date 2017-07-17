@@ -2,6 +2,7 @@ package ru.ijava.tracker.activitys;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -167,15 +168,29 @@ public class MapActivity extends AppCompatActivity {
         return sourceCode;
     }
 
-    private int determineScale(ArrayList<Location> locations) {
+    private int determineScale(ArrayList<Location> locationHistory) {
         int zoom = DEFAULT_MAP_ZOOM;
-        if (locations != null)
+        if (locationHistory != null)
         {
-            if(locations.size() == ONLY_ONE_LOCATION) {
+            if(locationHistory.size() == ONLY_ONE_LOCATION) {
                 zoom = ZOOM_ONE_LOCATION;
             }
             else {
                 //TODO Вычисляем маштаб с учетом рассояния между точками, чтобы все вместились и не слишком мелко
+                float[] results = new float[3];
+                double minLatitude = getMinLatitudeLocation(locationHistory).getLatitude();
+                double maxLatitude = getMaxLatitudeLocation(locationHistory).getLatitude();
+                double minLongitude = getMinLongitudeLocation(locationHistory).getLongitude();
+                double maxLongitude = getMaxLongitudeLocation(locationHistory).getLongitude();
+                Location.distanceBetween(minLatitude, minLongitude, maxLatitude, maxLongitude, results);
+                float distance = results[0];
+
+                //TODO map.setBounds([[60,-40], [20,60]])  и можно применить костыль в виде отступа, что к одиночной позиции, что к групповой. Так что похоже setZoom для нас декпрекатед, будем отображать требуемый кусок через установку границ
+                //TODO незабудь убрать костыль из assets/index.html костыль выглядит как статический setBounds, его необходимо автоматизировать
+//                Log.i("RELE", "minLatitude = " + minLatitude);
+//                Log.i("RELE", "maxLatitude = " + maxLatitude);
+//                Log.i("RELE", "minLongitude = " + minLongitude);
+//                Log.i("RELE", "maxLongitude = " + maxLongitude);
             }
         }
 
@@ -183,14 +198,22 @@ public class MapActivity extends AppCompatActivity {
     }
 
     //TODO В перспективе необходимо центрировать карту относительно выводимых точек и выставлять маштаб карты такой чтобы все точки вписались в экран с небольши отступом по краям
-
     private Location determineCenterLocation(ArrayList<Location> locationHistory) {
         // Набросок метода определения центра и маштаба по выводимым точкам
-        double centerLatitude = DEFAULT_CENTER_LATITUDE;
-        double centerLongitude = DEFAULT_CENTER_LONGITUDE;
+        double centerLatitude;
+        double centerLongitude;
         if(locationHistory.size() == ONLY_ONE_LOCATION) {
             centerLatitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
             centerLongitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
+        }
+        else {
+            double minLatitude = getMinLatitudeLocation(locationHistory).getLatitude();
+            double maxLatitude = getMaxLatitudeLocation(locationHistory).getLatitude();
+            double minLongitude = getMinLongitudeLocation(locationHistory).getLongitude();
+            double maxLongitude = getMaxLongitudeLocation(locationHistory).getLongitude();
+
+            centerLatitude = (maxLatitude - minLatitude)/2 + minLatitude;
+            centerLongitude = (maxLongitude - minLongitude)/2 + minLongitude;
         }
 
         Location location = new Location(PositionSystem.TRACKER_PROVIDER);
@@ -200,4 +223,57 @@ public class MapActivity extends AppCompatActivity {
 
         return location;
     }
+
+    private Location getMinLatitudeLocation(ArrayList<Location> locationsList) {
+        Location minLatitudeLocation = null;
+        for (Location location : locationsList) {
+            if(minLatitudeLocation == null) {
+                minLatitudeLocation = location;
+            }
+            if(location.getLatitude() < minLatitudeLocation.getLatitude()) {
+                minLatitudeLocation = location;
+            }
+        }
+        return minLatitudeLocation;
+    }
+
+    private Location getMaxLatitudeLocation(ArrayList<Location> locationsList) {
+        Location maxLatitudeLocation = null;
+        for (Location location : locationsList) {
+            if(maxLatitudeLocation == null) {
+                maxLatitudeLocation = location;
+            }
+            if(location.getLatitude() > maxLatitudeLocation.getLatitude()) {
+                maxLatitudeLocation = location;
+            }
+        }
+        return maxLatitudeLocation;
+    }
+
+    private Location getMinLongitudeLocation(ArrayList<Location> locationsList) {
+        Location minLongitudeLocation = null;
+        for (Location location : locationsList) {
+            if(minLongitudeLocation == null) {
+                minLongitudeLocation = location;
+            }
+            if(location.getLatitude() < minLongitudeLocation.getLatitude()) {
+                minLongitudeLocation = location;
+            }
+        }
+        return minLongitudeLocation;
+    }
+
+    private Location getMaxLongitudeLocation(ArrayList<Location> locationsList) {
+        Location maxLongitudeLocation = null;
+        for (Location location : locationsList) {
+            if(maxLongitudeLocation == null) {
+                maxLongitudeLocation = location;
+            }
+            if(location.getLatitude() > maxLongitudeLocation.getLatitude()) {
+                maxLongitudeLocation = location;
+            }
+        }
+        return maxLongitudeLocation;
+    }
+
 }

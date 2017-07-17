@@ -49,9 +49,6 @@ public class TrackerService extends Service {
                 }
                 android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
-                //TODO Везде переходим на android.location.Location, ru.ijava.model.location теперь депрекатед!!!
-                //TODO Начинаем сохранять в базе источник места положения String getProvider () Returns the name of the provider that generated this fix.
-
                 ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
                 device.setCurrentLocation(lastKnownLocation);
 

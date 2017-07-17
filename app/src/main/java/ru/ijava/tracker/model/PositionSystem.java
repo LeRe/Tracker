@@ -2,6 +2,7 @@ package ru.ijava.tracker.model;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 
@@ -27,7 +28,7 @@ public class PositionSystem {
         this.activity = activity;
         this.device = device;
 
-        determineCurrentLocation();
+        this.determineCurrentLocation();
     }
 
     public void determineCurrentLocation() {
@@ -46,17 +47,16 @@ public class PositionSystem {
                 public void onSuccess(android.location.Location location) {
                     if (location != null && device != null) {
                         device.setCurrentLocation(location);
-                        saveLocationToDB(device);
+                        saveDeviceLocation(activity.getApplicationContext(), device);
                     }
                 }
             });
         }
     }
 
-    private void saveLocationToDB(Device device) {
-        if(device.getCurrentLocation() != null) {
-            DBHelper sqliteDB = new DBHelper(activity);
-            sqliteDB.saveDeviceLocation(device);
-        }
+    private void saveDeviceLocation(Context context, Device device) {
+        DBHelper sqliteDB = new DBHelper(context);
+        sqliteDB.saveDeviceLocation(device);
+        sqliteDB.close();
     }
 }
