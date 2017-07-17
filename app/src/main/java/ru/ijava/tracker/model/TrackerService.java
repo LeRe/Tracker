@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.location.Location;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,10 +53,7 @@ public class TrackerService extends Service {
                 //TODO Начинаем сохранять в базе источник места положения String getProvider () Returns the name of the provider that generated this fix.
 
                 ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
-                device.setCurrentLocation(new Location(
-                        lastKnownLocation.getLatitude(),
-                        lastKnownLocation.getLongitude(),
-                        lastKnownLocation.getTime()));
+                device.setCurrentLocation(lastKnownLocation);
 
                 DBHelper sqliteDB = new DBHelper(getApplicationContext());
                 sqliteDB.saveDeviceLocation(device);

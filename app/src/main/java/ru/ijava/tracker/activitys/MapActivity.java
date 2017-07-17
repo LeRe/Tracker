@@ -13,7 +13,10 @@ import java.util.Date;
 
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.model.Device;
-import ru.ijava.tracker.model.Location;
+import ru.ijava.tracker.model.PositionSystem;
+import ru.ijava.tracker.model.Tools;
+
+import android.location.Location;
 
 /**
  * Created by levchenko on 21.06.2017.
@@ -51,7 +54,7 @@ public class MapActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Device device = null;
         if (bundle != null) {
-            device = (Device) bundle.getSerializable(DEVICE_KEY);
+            device = (Device) bundle.getParcelable(DEVICE_KEY);//bundle.getSerializable(DEVICE_KEY);
         }
 
         WebView webView = (WebView) findViewById(R.id.webView);
@@ -125,7 +128,8 @@ public class MapActivity extends AppCompatActivity {
             double latitude = balloonLocation.getLatitude();
             double longitude = balloonLocation.getLongitude();
             long timestamp = balloonLocation.getTime();
-            String balloonContent = device.getNickName() + "<BR>" + new Date(timestamp);
+            String balloonContent = device.getNickName() + "<BR>" + new Date(timestamp) +
+                    "<BR>Provider: " + balloonLocation.getProvider();
 
             sourceCode = sourceCode.replace(BALLOON_INDEX_PATTERN, Long.toString(timestamp));
             sourceCode = sourceCode.replace(BALLOON_LATITUDE_PATTERN, Double.toString(latitude));
@@ -144,7 +148,7 @@ public class MapActivity extends AppCompatActivity {
     private String generatePolylineCode(ArrayList<Location> locationsHistory, String sourceCode) {
         if(locationsHistory != null && locationsHistory.size() > 1)
         {
-            Collections.sort(locationsHistory, Location.comparator);
+            Collections.sort(locationsHistory, Tools.comparator);
 
             StringBuilder polylineCoordinates = new StringBuilder();
             polylineCoordinates.append("[");
@@ -189,7 +193,10 @@ public class MapActivity extends AppCompatActivity {
             centerLongitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
         }
 
-        Location location = new Location(centerLatitude, centerLongitude, 0);
+        Location location = new Location(PositionSystem.TRACKER_PROVIDER);
+        location.setLatitude(centerLatitude);
+        location.setLongitude(centerLongitude);
+        location.setTime(0);
 
         return location;
     }

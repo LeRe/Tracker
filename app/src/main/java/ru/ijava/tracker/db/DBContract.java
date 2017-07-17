@@ -47,13 +47,17 @@ public class DBContract {
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
         public static final String COLUMN_TYPE_LONGITUDE = "REAL";
 
+        public static final String COLUMN_NAME_PROVIDER = "provider";
+        public static final String COLUMN_TYPE_PROVIDER = "TEXT";
+
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
                 " (" +
                 _ID + " " + COLUMN_TYPE_ID + ", " +
                 COLUMN_NAME_DEVICE_ID + " " + COLUMN_TYPE_DEVICE_ID + ", " +
                 COLUMN_NAME_TIMESTAMP + " " + COLUMN_TYPE_TIMESTAMP + ", " +
                 COLUMN_NAME_LATITUDE + " " + COLUMN_TYPE_LATITUDE + ", " +
-                COLUMN_NAME_LONGITUDE + " " + COLUMN_TYPE_LONGITUDE +
+                COLUMN_NAME_LONGITUDE + " " + COLUMN_TYPE_LONGITUDE + ", " +
+                COLUMN_NAME_PROVIDER + " " + COLUMN_TYPE_PROVIDER +
                 ");";
 
         public static final String DELETE_TABLE =

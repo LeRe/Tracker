@@ -5,14 +5,16 @@ import android.content.Context;
 
 import com.google.android.gms.iid.InstanceID;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by levchenko on 22.06.2017.
  */
 
-public class Device implements Serializable {
+public class Device implements Parcelable {
     private String id;
     private String nickName;
     private Location currentLocation;
@@ -70,4 +72,43 @@ public class Device implements Serializable {
     public void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(nickName);
+        dest.writeParcelable(currentLocation, 0);
+        dest.writeTypedList(locationsHistory);
+    }
+
+    public Device(Parcel in) {
+        this.id = in.readString();
+        this.nickName = in.readString();
+        this.currentLocation = in.readParcelable(Location.class.getClassLoader());
+        this.locationsHistory = in.readArrayList(Location.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Device> CREATOR
+            = new Parcelable.ClassLoaderCreator<Device>() {
+
+        @Override
+        public Device createFromParcel(Parcel source) {
+            return new Device(source);
+        }
+
+        @Override
+        public Device[] newArray(int size) {
+            return new Device[size];
+        }
+
+        @Override
+        public Device createFromParcel(Parcel source, ClassLoader loader) {
+            return new Device(source);
+        }
+    };
 }

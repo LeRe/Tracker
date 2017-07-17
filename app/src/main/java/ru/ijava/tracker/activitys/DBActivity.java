@@ -30,7 +30,7 @@ public class DBActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         device = null;
         if (bundle != null) {
-            device = (Device) bundle.getSerializable(DEVICE_KEY);
+            device = (Device) bundle.getParcelable(DEVICE_KEY);//bundle.getSerializable(DEVICE_KEY);
         }
 
         Button buttonLoadData = (Button) findViewById(R.id.button_load_db_data);

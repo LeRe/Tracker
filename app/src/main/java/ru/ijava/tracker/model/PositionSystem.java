@@ -11,12 +11,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import ru.ijava.tracker.activitys.MenuActivity;
 import ru.ijava.tracker.db.DBHelper;
+import android.location.Location;
 
 /**
  * Created by rele on 7/7/17.
  */
 
 public class PositionSystem {
+    public static final String TRACKER_PROVIDER = "tracker";
+
     private Activity activity;
     Device device;
 
@@ -42,10 +45,7 @@ public class PositionSystem {
                 @Override
                 public void onSuccess(android.location.Location location) {
                     if (location != null && device != null) {
-                        device.setCurrentLocation(
-                                new Location(
-                                        location.getLatitude(), location.getLongitude(), location.getTime())
-                        );
+                        device.setCurrentLocation(location);
                         saveLocationToDB(device);
                     }
                 }

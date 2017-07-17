@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import ru.ijava.tracker.model.Device;
-import ru.ijava.tracker.model.Location;
+import android.location.Location;
 
 /**
  * Created by levchenko on 27.06.2017.
@@ -42,7 +42,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String[] columns = { DBContract.Location.COLUMN_NAME_LATITUDE,
                 DBContract.Location.COLUMN_NAME_LONGITUDE,
-                DBContract.Location.COLUMN_NAME_TIMESTAMP };
+                DBContract.Location.COLUMN_NAME_TIMESTAMP,
+                DBContract.Location.COLUMN_NAME_PROVIDER};
 
         String selection = DBContract.Location.COLUMN_NAME_DEVICE_ID + " = ?";
         String[] selectionArgs = { deviceId };
@@ -56,15 +57,17 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if ( cursor != null ) {
             cursor.moveToFirst();
-            double latitude = cursor.getDouble(0);
-            double longitude = cursor.getDouble(1);
-            long timestamp = cursor.getLong(2);
-            Location location = new Location(latitude, longitude, timestamp);
+            Location location = new Location(cursor.getString(3));
+            location.setLatitude(cursor.getDouble(0));
+            location.setLongitude(cursor.getDouble(1));
+            location.setTime(cursor.getLong(2));
             device.putLocationToHistory(location);
         }
         cursor.close();
         db.close();
     }
+
+    //TODO Метод извлекающий местоположения из базы по id devic'a и складывающий эти местоположения в Аррэй лист девайсу, сортировать можно после складывания отсюда же
 
     public void getDeviceLocationsHistory(Device device) {
         String deviceId = device.getId();
@@ -73,7 +76,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         String[] columns = { DBContract.Location.COLUMN_NAME_LATITUDE,
                 DBContract.Location.COLUMN_NAME_LONGITUDE,
-                DBContract.Location.COLUMN_NAME_TIMESTAMP };
+                DBContract.Location.COLUMN_NAME_TIMESTAMP,
+                DBContract.Location.COLUMN_NAME_PROVIDER };
 
         String selection = DBContract.Location.COLUMN_NAME_DEVICE_ID + " = ?";
         String[] selectionArgs = { deviceId };
@@ -83,10 +87,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         if ( cursor != null ) {
             while ( cursor.moveToNext() ) {
-                double latitude = cursor.getDouble(0);
-                double longitude = cursor.getDouble(1);
-                long timestamp = cursor.getLong(2);
-                Location location = new Location(latitude, longitude, timestamp);
+                Location location = new Location(cursor.getString(3));
+                location.setLatitude(cursor.getDouble(0));
+                location.setLongitude(cursor.getDouble(1));
+                location.setTime(cursor.getLong(2));
                 device.putLocationToHistory(location);
             }
         }
@@ -104,6 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, location.getTime());
         values.put(DBContract.Location.COLUMN_NAME_LATITUDE, location.getLatitude());
         values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, location.getLongitude());
+        values.put(DBContract.Location.COLUMN_NAME_PROVIDER, location.getProvider());
 
         long rowId = db.insert(DBContract.Location.TABLE_NAME, null, values);
 
@@ -156,9 +161,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    //TODO Метод извлекающий местоположения из базы по id devic'a и складывающий эти местоположения в Аррэй лист девайсу, сортировать можно после складывания отсюда же
-
-
     public void loadExampleData(Device device) {
         SQLiteDatabase db = this.getWritableDatabase();
         onUpgrade(db, 0, 0); //Clear tables
@@ -185,6 +187,7 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, arrRecords[i][2]);
             values.put(DBContract.Location.COLUMN_NAME_LATITUDE, arrRecords[i][3]);
             values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, arrRecords[i][4]);
+            values.put(DBContract.Location.COLUMN_NAME_PROVIDER, "TEST_PROVIDER");
 
             db.insert(DBContract.Location.TABLE_NAME, null, values);
 
