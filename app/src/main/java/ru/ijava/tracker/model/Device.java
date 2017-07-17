@@ -1,10 +1,7 @@
 package ru.ijava.tracker.model;
 
-import android.app.Activity;
 import android.content.Context;
-
 import com.google.android.gms.iid.InstanceID;
-
 import java.util.ArrayList;
 import android.location.Location;
 import android.os.Parcel;
@@ -90,7 +87,8 @@ public class Device implements Parcelable {
         this.id = in.readString();
         this.nickName = in.readString();
         this.currentLocation = in.readParcelable(Location.class.getClassLoader());
-        this.locationsHistory = in.readArrayList(Location.class.getClassLoader());
+        this.initializeLocationsHistory();
+        in.readTypedList(this.locationsHistory, Location.CREATOR);
     }
 
     public static final Parcelable.Creator<Device> CREATOR
