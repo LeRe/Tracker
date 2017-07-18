@@ -2,7 +2,6 @@ package ru.ijava.tracker.activitys;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -29,12 +28,13 @@ public class MapActivity extends AppCompatActivity {
     public static final String MAP_CENTER_LONGITUDE_PATTERN = "$LONGITUDE$";
     public static final String BALLOON_CONTENT_PATTERN = "$BALLOON_CONTENT$";
     public static final String ICON_COLOR_PATTERN = "$ICON_COLOR$";
-    public static final String GEO_OBJECTS_PATTERN = "$GEO_OBJECTS$";
+    public static final String ADDITIONAL_CODE_PATTERN = "$ADDITIONAL_CODE$";
     public static final String BALLOON_INDEX_PATTERN = "$BALLOON_INDEX$";
     public static final String BALLOON_LATITUDE_PATTERN = "$BALLOON_LATITUDE$";
     public static final String BALLOON_LONGITUDE_PATTERN = "$BALLOON_LONGITUDE$";
     public static final String MAP_ZOOM_PATTERN = "$ZOOM$";
     public static final String POLYLINE_COORDINATES_PATTERN = "$POLYLINE_COORDINATES$";
+    public static final String BOUNDS_COORDINATES_PATTERN = "$BOUNDS_COORDINATES$";
 
     public static final String LAST_BALLOON_COLOR = "Blue";
     public static final String COMMON_BALLOON_COLOR = "Grey";
@@ -85,7 +85,7 @@ public class MapActivity extends AppCompatActivity {
             String polylineCode = generatePolylineCode(locationsHistory, polylineJS);
             geoObjects.append(polylineCode);
 
-            indexHtml = indexHtml.replace(GEO_OBJECTS_PATTERN, geoObjects.toString());
+            indexHtml = addAdditionalCode(geoObjects.toString(), indexHtml);
 
             Location centerLocation = determineCenterLocation(locationsHistory);
             indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(centerLocation.getLatitude()));
@@ -94,7 +94,7 @@ public class MapActivity extends AppCompatActivity {
         else {
             indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LATITUDE));
             indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LONGITUDE));
-            indexHtml = indexHtml.replace(GEO_OBJECTS_PATTERN, "");
+            indexHtml = addAdditionalCode("", indexHtml);
         }
 
         //set map zoom
@@ -108,6 +108,11 @@ public class MapActivity extends AppCompatActivity {
                 "UTF-8",
                 null
         );
+    }
+
+    private String addAdditionalCode(String additionalCode, String sourceCode) {
+        sourceCode = sourceCode.replace(ADDITIONAL_CODE_PATTERN, additionalCode);
+        return sourceCode;
     }
 
     private String readAsset(String name) {
@@ -164,6 +169,15 @@ public class MapActivity extends AppCompatActivity {
         {
             return "";
         }
+
+        return sourceCode;
+    }
+
+    private String generateSetBoundsCode(Location firstLocation, Location secondLocation, String sourceCode) {
+
+        /* map.setBounds([[60,-40], [20,60]]) */
+        // need generate and insert   [[55.171,37.3443],[55.4397,37.7496]]
+        continueHere
 
         return sourceCode;
     }

@@ -1,0 +1,1 @@
+trackerMap.setBounds($BOUNDS_COORDINATES$);
