@@ -173,6 +173,8 @@ public class MapActivity extends AppCompatActivity {
         return sourceCode;
     }
 
+    //TODO write generateSetZoomCode metod and use him for set zoom
+
     private String generateSetBoundsCode(Location firstLocation, Location secondLocation, String sourceCode) {
 
         /* map.setBounds([[60,-40], [20,60]]) */
