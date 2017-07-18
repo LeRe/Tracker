@@ -42,6 +42,12 @@ public class MapActivity extends AppCompatActivity {
     public static final double DEFAULT_CENTER_LATITUDE = 55.641468;
     public static final double DEFAULT_CENTER_LONGITUDE = 37.442406;
 
+    //From index.html
+    //center: [$LATITUDE$, $LONGITUDE$],
+    //zoom: $ZOOM$
+
+    public static final double GEO_OBJECT_PADDING = 1d;
+
     public static final int DEFAULT_MAP_ZOOM = 10;
     public static final int ONLY_ONE_LOCATION = 1;
     public static final int ZOOM_ONE_LOCATION = 16;
@@ -55,7 +61,7 @@ public class MapActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Device device = null;
         if (bundle != null) {
-            device = (Device) bundle.getParcelable(DEVICE_KEY);//bundle.getSerializable(DEVICE_KEY);
+            device = bundle.getParcelable(DEVICE_KEY);//bundle.getSerializable(DEVICE_KEY);
         }
 
         WebView webView = (WebView) findViewById(R.id.webView);
@@ -65,41 +71,43 @@ public class MapActivity extends AppCompatActivity {
         String indexHtml = readAsset("index.html");
         String balloonJS = readAsset("balloon.js");
         String polylineJS = readAsset("polyline.js");
+        String setBoundsJS = readAsset("set_bounds.js");
 
         ArrayList<Location> locationsHistory = device.getLocationsHistory();
 
-        if(device != null && locationsHistory != null) {
-            StringBuilder geoObjects = new StringBuilder();
+        StringBuilder additionalCode = new StringBuilder();
 
-            int lastIndex = locationsHistory.size() - 1;
-            String balloonColor = COMMON_BALLOON_COLOR;
-            for (int i = 0; i < locationsHistory.size(); i++) {
-                Location location = locationsHistory.get(i);
-                if(i == lastIndex) {
-                    balloonColor = LAST_BALLOON_COLOR;
-                }
-                String balloonCode = generateBalloonCode(device, location, balloonColor, balloonJS);
-                geoObjects.append(balloonCode);
-            }
+        String balloonsCode = generateBalloonsCode(device, locationsHistory, balloonJS);
+        additionalCode.append(balloonsCode);
 
-            String polylineCode = generatePolylineCode(locationsHistory, polylineJS);
-            geoObjects.append(polylineCode);
+        String polylineCode = generatePolylineCode(locationsHistory, polylineJS);
+        additionalCode.append(polylineCode);
 
-            indexHtml = addAdditionalCode(geoObjects.toString(), indexHtml);
+        //set center TODO remake via additional code
+        // Думаю депрекатед, так как должно установиться через setBounds
+//        Location centerLocation = determineCenterLocation(locationsHistory);
+//        indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(centerLocation.getLatitude()));
+//        indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(centerLocation.getLongitude()));
 
-            Location centerLocation = determineCenterLocation(locationsHistory);
-            indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(centerLocation.getLatitude()));
-            indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(centerLocation.getLongitude()));
-        }
-        else {
-            indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LATITUDE));
-            indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LONGITUDE));
-            indexHtml = addAdditionalCode("", indexHtml);
-        }
+        //set bounds    Должно заменить установку центра и зуума
+        String setBoundsCode = generateSetBoundsCode(locationsHistory, setBoundsJS);
+        additionalCode.append(setBoundsCode);
 
-        //set map zoom
-        int zoomMap = determineScale(locationsHistory);
-        indexHtml = indexHtml.replace(MAP_ZOOM_PATTERN, Integer.toString(zoomMap));
+        indexHtml = addAdditionalCode(additionalCode.toString(), indexHtml);
+
+
+
+            // Set center in else block
+            // indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LATITUDE));
+            // indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LONGITUDE));
+
+
+
+
+
+        //set map zoom TODO DEPRECATED аштаб будет устанавливаться через setBounds  и еще будем устанавливать центр
+//        int zoomMap = determineScale(locationsHistory);
+//        indexHtml = indexHtml.replace(MAP_ZOOM_PATTERN, Integer.toString(zoomMap));
 
         webView.loadDataWithBaseURL(
                 "http://ru.yandex.api.yandexmapswebviewexample.ymapapp",
@@ -127,6 +135,25 @@ public class MapActivity extends AppCompatActivity {
         }
 
         return "";
+    }
+
+    private String generateBalloonsCode(Device device, ArrayList<Location> locationsHistory, String sourceCode) {
+        StringBuilder balloonsCode = new StringBuilder();
+
+        if(device != null && locationsHistory != null) {
+            int lastIndex = locationsHistory.size() - 1;
+            String balloonColor = COMMON_BALLOON_COLOR;
+            for (int i = 0; i < locationsHistory.size(); i++) {
+                Location location = locationsHistory.get(i);
+                if (i == lastIndex) {
+                    balloonColor = LAST_BALLOON_COLOR;
+                }
+                String balloonCode = generateBalloonCode(device, location, balloonColor, sourceCode);
+                balloonsCode.append(balloonCode);
+            }
+        }
+
+        return balloonsCode.toString();
     }
 
     private String generateBalloonCode(Device device, Location balloonLocation, String balloonColor, String sourceCode) {
@@ -173,15 +200,47 @@ public class MapActivity extends AppCompatActivity {
         return sourceCode;
     }
 
-    //TODO write generateSetZoomCode metod and use him for set zoom
+    private String generateSetBoundsCode(ArrayList<Location> locationsHistory, String setBoundsSourceCode) {
+        double minLatitude;
+        double maxLatitude;
+        double minLongitude;
+        double maxLongitude;
 
-    private String generateSetBoundsCode(Location firstLocation, Location secondLocation, String sourceCode) {
+        if (locationsHistory != null)
+        {
+            if(locationsHistory.size() == ONLY_ONE_LOCATION) {
+                minLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
+                maxLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
+                minLongitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
+                maxLongitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
+
+            }
+            else {
+                minLatitude = getMinLatitudeLocation(locationsHistory).getLatitude();
+                maxLatitude = getMaxLatitudeLocation(locationsHistory).getLatitude();
+                minLongitude = getMinLongitudeLocation(locationsHistory).getLongitude();
+                maxLongitude = getMaxLongitudeLocation(locationsHistory).getLongitude();
+            }
+        }
+        else {
+            minLatitude = DEFAULT_CENTER_LATITUDE;
+            maxLatitude = DEFAULT_CENTER_LATITUDE;
+            minLongitude = DEFAULT_CENTER_LONGITUDE;
+            maxLongitude = DEFAULT_CENTER_LONGITUDE;
+        }
 
         /* map.setBounds([[60,-40], [20,60]]) */
-        // need generate and insert   [[55.171,37.3443],[55.4397,37.7496]]
-        continueHere
-
-        return sourceCode;
+        StringBuilder coordinates = new StringBuilder();
+        coordinates.append("[[");
+        coordinates.append(minLatitude - GEO_OBJECT_PADDING);
+        coordinates.append(",");
+        coordinates.append(minLongitude - GEO_OBJECT_PADDING);
+        coordinates.append("],[");
+        coordinates.append(maxLatitude + GEO_OBJECT_PADDING);
+        coordinates.append(",");
+        coordinates.append(maxLongitude + GEO_OBJECT_PADDING);
+        coordinates.append("]]");
+        return setBoundsSourceCode.replace(BOUNDS_COORDINATES_PATTERN, coordinates.toString());
     }
 
     private int determineScale(ArrayList<Location> locationHistory) {
