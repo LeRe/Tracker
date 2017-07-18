@@ -55,8 +55,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(false, DBContract.Location.TABLE_NAME, columns,
                 selection, selectionArgs, null, null, sortOrder, limit);
 
-        if ( cursor != null ) {
-            cursor.moveToFirst();
+        if (cursor != null && cursor.moveToFirst()) {
+
             Location location = new Location(cursor.getString(3));
             location.setLatitude(cursor.getDouble(0));
             location.setLongitude(cursor.getDouble(1));

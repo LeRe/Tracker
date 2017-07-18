@@ -46,10 +46,11 @@ public class MapActivity extends AppCompatActivity {
     //center: [$LATITUDE$, $LONGITUDE$],
     //zoom: $ZOOM$
 
-    public static final double GEO_OBJECT_PADDING = 1d;
+    public static final double GEO_OBJECT_PADDING = 0.5d;
 
     public static final int DEFAULT_MAP_ZOOM = 10;
     public static final int ONLY_ONE_LOCATION = 1;
+    public static final int NO_ONE_LOCATION = 0;
     public static final int ZOOM_ONE_LOCATION = 16;
     public static final int FIRST_ELEMENT_INDEX = 0;
 
@@ -206,7 +207,7 @@ public class MapActivity extends AppCompatActivity {
         double minLongitude;
         double maxLongitude;
 
-        if (locationsHistory != null)
+        if (locationsHistory != null && locationsHistory.size() != NO_ONE_LOCATION)
         {
             if(locationsHistory.size() == ONLY_ONE_LOCATION) {
                 minLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
