@@ -24,29 +24,23 @@ import android.location.Location;
 public class MapActivity extends AppCompatActivity {
     public static final String DEVICE_KEY = "device_key";
 
-    public static final String MAP_CENTER_LATITUDE_PATTERN = "$LATITUDE$";
-    public static final String MAP_CENTER_LONGITUDE_PATTERN = "$LONGITUDE$";
+    public static final String ADDITIONAL_CODE_PATTERN = "$ADDITIONAL_CODE$";
     public static final String BALLOON_CONTENT_PATTERN = "$BALLOON_CONTENT$";
     public static final String ICON_COLOR_PATTERN = "$ICON_COLOR$";
-    public static final String ADDITIONAL_CODE_PATTERN = "$ADDITIONAL_CODE$";
     public static final String BALLOON_INDEX_PATTERN = "$BALLOON_INDEX$";
     public static final String BALLOON_LATITUDE_PATTERN = "$BALLOON_LATITUDE$";
     public static final String BALLOON_LONGITUDE_PATTERN = "$BALLOON_LONGITUDE$";
-    public static final String MAP_ZOOM_PATTERN = "$ZOOM$";
     public static final String POLYLINE_COORDINATES_PATTERN = "$POLYLINE_COORDINATES$";
     public static final String BOUNDS_COORDINATES_PATTERN = "$BOUNDS_COORDINATES$";
 
     public static final String LAST_BALLOON_COLOR = "Blue";
     public static final String COMMON_BALLOON_COLOR = "Grey";
 
-    public static final double DEFAULT_CENTER_LATITUDE = 55.641468;
-    public static final double DEFAULT_CENTER_LONGITUDE = 37.442406;
+    public static final double DEFAULT_CENTER_LATITUDE = 44.758002;
+    public static final double DEFAULT_CENTER_LONGITUDE = 37.379895;
 
-    //From index.html
-    //center: [$LATITUDE$, $LONGITUDE$],
-    //zoom: $ZOOM$
-
-    public static final double GEO_OBJECT_PADDING = 0.5d;
+    public static final double GEO_OBJECT_PADDING_GROUP = 0.05d;
+    public static final double GEO_OBJECT_PADDING_SINGLE = 0.005d;
 
     public static final int DEFAULT_MAP_ZOOM = 10;
     public static final int ONLY_ONE_LOCATION = 1;
@@ -62,7 +56,7 @@ public class MapActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Device device = null;
         if (bundle != null) {
-            device = bundle.getParcelable(DEVICE_KEY);//bundle.getSerializable(DEVICE_KEY);
+            device = bundle.getParcelable(DEVICE_KEY);
         }
 
         WebView webView = (WebView) findViewById(R.id.webView);
@@ -84,31 +78,10 @@ public class MapActivity extends AppCompatActivity {
         String polylineCode = generatePolylineCode(locationsHistory, polylineJS);
         additionalCode.append(polylineCode);
 
-        //set center TODO remake via additional code
-        // Думаю депрекатед, так как должно установиться через setBounds
-//        Location centerLocation = determineCenterLocation(locationsHistory);
-//        indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(centerLocation.getLatitude()));
-//        indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(centerLocation.getLongitude()));
-
-        //set bounds    Должно заменить установку центра и зуума
         String setBoundsCode = generateSetBoundsCode(locationsHistory, setBoundsJS);
         additionalCode.append(setBoundsCode);
 
         indexHtml = addAdditionalCode(additionalCode.toString(), indexHtml);
-
-
-
-            // Set center in else block
-            // indexHtml = indexHtml.replace(MAP_CENTER_LATITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LATITUDE));
-            // indexHtml = indexHtml.replace(MAP_CENTER_LONGITUDE_PATTERN, Double.toString(DEFAULT_CENTER_LONGITUDE));
-
-
-
-
-
-        //set map zoom TODO DEPRECATED аштаб будет устанавливаться через setBounds  и еще будем устанавливать центр
-//        int zoomMap = determineScale(locationsHistory);
-//        indexHtml = indexHtml.replace(MAP_ZOOM_PATTERN, Integer.toString(zoomMap));
 
         webView.loadDataWithBaseURL(
                 "http://ru.yandex.api.yandexmapswebviewexample.ymapapp",
@@ -134,7 +107,6 @@ public class MapActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return "";
     }
 
@@ -187,7 +159,6 @@ public class MapActivity extends AppCompatActivity {
             StringBuilder polylineCoordinates = new StringBuilder();
             polylineCoordinates.append("[");
             for (Location location : locationsHistory) {
-                //generate polyline coords [[55.80, 37.50], [55.80, 37.40], [55.70, 37.50], [55.70, 37.40]]
                 polylineCoordinates.append("[" + location.getLatitude() + "," + location.getLongitude() + "],");
             }
             polylineCoordinates.append("]");
@@ -210,94 +181,37 @@ public class MapActivity extends AppCompatActivity {
         if (locationsHistory != null && locationsHistory.size() != NO_ONE_LOCATION)
         {
             if(locationsHistory.size() == ONLY_ONE_LOCATION) {
-                minLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
-                maxLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
-                minLongitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
-                maxLongitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
+                minLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude() - GEO_OBJECT_PADDING_SINGLE;
+                maxLatitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLatitude() + GEO_OBJECT_PADDING_SINGLE;
+                minLongitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLongitude() - GEO_OBJECT_PADDING_SINGLE;
+                maxLongitude = locationsHistory.get(FIRST_ELEMENT_INDEX).getLongitude() + GEO_OBJECT_PADDING_SINGLE;
 
             }
             else {
-                minLatitude = getMinLatitudeLocation(locationsHistory).getLatitude();
-                maxLatitude = getMaxLatitudeLocation(locationsHistory).getLatitude();
-                minLongitude = getMinLongitudeLocation(locationsHistory).getLongitude();
-                maxLongitude = getMaxLongitudeLocation(locationsHistory).getLongitude();
+                minLatitude = getMinLatitudeLocation(locationsHistory).getLatitude() - GEO_OBJECT_PADDING_GROUP;
+                maxLatitude = getMaxLatitudeLocation(locationsHistory).getLatitude() + GEO_OBJECT_PADDING_GROUP;
+                minLongitude = getMinLongitudeLocation(locationsHistory).getLongitude() - GEO_OBJECT_PADDING_GROUP;
+                maxLongitude = getMaxLongitudeLocation(locationsHistory).getLongitude() + GEO_OBJECT_PADDING_GROUP;
             }
         }
         else {
-            minLatitude = DEFAULT_CENTER_LATITUDE;
-            maxLatitude = DEFAULT_CENTER_LATITUDE;
-            minLongitude = DEFAULT_CENTER_LONGITUDE;
-            maxLongitude = DEFAULT_CENTER_LONGITUDE;
+            minLatitude = DEFAULT_CENTER_LATITUDE - GEO_OBJECT_PADDING_SINGLE;;
+            maxLatitude = DEFAULT_CENTER_LATITUDE + GEO_OBJECT_PADDING_SINGLE;
+            minLongitude = DEFAULT_CENTER_LONGITUDE - GEO_OBJECT_PADDING_SINGLE;;
+            maxLongitude = DEFAULT_CENTER_LONGITUDE + GEO_OBJECT_PADDING_SINGLE;
         }
 
-        /* map.setBounds([[60,-40], [20,60]]) */
         StringBuilder coordinates = new StringBuilder();
         coordinates.append("[[");
-        coordinates.append(minLatitude - GEO_OBJECT_PADDING);
+        coordinates.append(minLatitude);
         coordinates.append(",");
-        coordinates.append(minLongitude - GEO_OBJECT_PADDING);
+        coordinates.append(minLongitude);
         coordinates.append("],[");
-        coordinates.append(maxLatitude + GEO_OBJECT_PADDING);
+        coordinates.append(maxLatitude);
         coordinates.append(",");
-        coordinates.append(maxLongitude + GEO_OBJECT_PADDING);
+        coordinates.append(maxLongitude);
         coordinates.append("]]");
         return setBoundsSourceCode.replace(BOUNDS_COORDINATES_PATTERN, coordinates.toString());
-    }
-
-    private int determineScale(ArrayList<Location> locationHistory) {
-        int zoom = DEFAULT_MAP_ZOOM;
-        if (locationHistory != null)
-        {
-            if(locationHistory.size() == ONLY_ONE_LOCATION) {
-                zoom = ZOOM_ONE_LOCATION;
-            }
-            else {
-                //TODO Вычисляем маштаб с учетом рассояния между точками, чтобы все вместились и не слишком мелко
-                float[] results = new float[3];
-                double minLatitude = getMinLatitudeLocation(locationHistory).getLatitude();
-                double maxLatitude = getMaxLatitudeLocation(locationHistory).getLatitude();
-                double minLongitude = getMinLongitudeLocation(locationHistory).getLongitude();
-                double maxLongitude = getMaxLongitudeLocation(locationHistory).getLongitude();
-                Location.distanceBetween(minLatitude, minLongitude, maxLatitude, maxLongitude, results);
-                float distance = results[0];
-
-                //TODO map.setBounds([[60,-40], [20,60]])  и можно применить костыль в виде отступа, что к одиночной позиции, что к групповой. Так что похоже setZoom для нас декпрекатед, будем отображать требуемый кусок через установку границ
-                //TODO незабудь убрать костыль из assets/index.html костыль выглядит как статический setBounds, его необходимо автоматизировать
-//                Log.i("RELE", "minLatitude = " + minLatitude);
-//                Log.i("RELE", "maxLatitude = " + maxLatitude);
-//                Log.i("RELE", "minLongitude = " + minLongitude);
-//                Log.i("RELE", "maxLongitude = " + maxLongitude);
-            }
-        }
-
-        return zoom;
-    }
-
-    //TODO В перспективе необходимо центрировать карту относительно выводимых точек и выставлять маштаб карты такой чтобы все точки вписались в экран с небольши отступом по краям
-    private Location determineCenterLocation(ArrayList<Location> locationHistory) {
-        // Набросок метода определения центра и маштаба по выводимым точкам
-        double centerLatitude;
-        double centerLongitude;
-        if(locationHistory.size() == ONLY_ONE_LOCATION) {
-            centerLatitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLatitude();
-            centerLongitude = locationHistory.get(FIRST_ELEMENT_INDEX).getLongitude();
-        }
-        else {
-            double minLatitude = getMinLatitudeLocation(locationHistory).getLatitude();
-            double maxLatitude = getMaxLatitudeLocation(locationHistory).getLatitude();
-            double minLongitude = getMinLongitudeLocation(locationHistory).getLongitude();
-            double maxLongitude = getMaxLongitudeLocation(locationHistory).getLongitude();
-
-            centerLatitude = (maxLatitude - minLatitude)/2 + minLatitude;
-            centerLongitude = (maxLongitude - minLongitude)/2 + minLongitude;
-        }
-
-        Location location = new Location(PositionSystem.TRACKER_PROVIDER);
-        location.setLatitude(centerLatitude);
-        location.setLongitude(centerLongitude);
-        location.setTime(0);
-
-        return location;
     }
 
     private Location getMinLatitudeLocation(ArrayList<Location> locationsList) {
