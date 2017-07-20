@@ -9,7 +9,6 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.location.Location;
 
 import java.util.Timer;
 import java.util.TimerTask;

@@ -20,8 +20,9 @@
         <activity android:name=".activitys.MapActivity" />
         <activity android:name=".activitys.DBActivity" />
         <service android:name=".model.TrackerService"
-            android:exported="false"
-            />
+            android:exported="false" />
+        <service android:name=".model.ServerService"
+            android:exported="false" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

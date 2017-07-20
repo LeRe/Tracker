@@ -16,6 +16,7 @@ import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.PositionSystem;
+import ru.ijava.tracker.model.ServerService;
 import ru.ijava.tracker.model.TrackerService;
 
 public class MenuActivity extends AppCompatActivity {
@@ -79,8 +80,12 @@ public class MenuActivity extends AppCompatActivity {
 
 
         //start service
-        Intent intent = new Intent(this, TrackerService.class);
-        startService(intent);
+        Intent intentTracker = new Intent(this, TrackerService.class);
+        startService(intentTracker);
+
+        //TODO need deBug
+        //Intent intentServer = new Intent(this, ServerService.class);
+        //startService(intentServer);
     }
 
     @Override
