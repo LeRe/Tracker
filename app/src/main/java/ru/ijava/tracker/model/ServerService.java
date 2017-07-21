@@ -22,20 +22,26 @@ public class ServerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        try {
-            ServerSocket ss = new ServerSocket(8080);
-            while (true) {
-                Socket s = ss.accept();
-                //System.err.println("Client accepted");
-                new Thread(new SocketProcessor(s)).start();
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        new Thread(new SocketServer()).start();
 
         return START_STICKY;
+    }
+
+    private static class SocketServer implements Runnable {
+        @Override
+        public void run() {
+            try {
+                ServerSocket ss = new ServerSocket(2222);
+                while (true) {
+                    Socket s = ss.accept();
+                    new Thread(new SocketProcessor(s)).start();
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static class SocketProcessor implements Runnable {
@@ -58,7 +64,7 @@ public class ServerService extends Service {
         public void run() {
             try {
                 readInputHeaders();
-                writeResponse("<html><body><h1>Hello from Habrahabr</h1></body></html>");
+                writeResponse("<html><body><h1>Hello WORLD!!!</h1></body></html>");
             } catch (Throwable t) {
                 /*do nothing*/
             } finally {

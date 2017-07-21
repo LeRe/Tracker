@@ -84,8 +84,8 @@ public class MenuActivity extends AppCompatActivity {
         startService(intentTracker);
 
         //TODO need deBug
-        //Intent intentServer = new Intent(this, ServerService.class);
-        //startService(intentServer);
+        Intent intentServer = new Intent(this, ServerService.class);
+        startService(intentServer);
     }
 
     @Override
