@@ -48,11 +48,13 @@ public class TrackerService extends Service {
                 }
                 android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
-                ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
-                device.setCurrentLocation(lastKnownLocation);
+                if(lastKnownLocation != null) {
+                    ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
+                    device.setCurrentLocation(lastKnownLocation);
 
-                DBHelper sqliteDB = new DBHelper(getApplicationContext());
-                sqliteDB.saveDeviceLocation(device);
+                    DBHelper sqliteDB = new DBHelper(getApplicationContext());
+                    sqliteDB.saveDeviceLocation(device);
+                }
             }
         };
 
