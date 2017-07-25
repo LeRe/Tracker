@@ -14,6 +14,7 @@ import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.PositionSystem;
+import ru.ijava.tracker.network.Client;
 import ru.ijava.tracker.services.ServerService;
 import ru.ijava.tracker.services.TrackerService;
 
@@ -62,6 +63,8 @@ public class MenuActivity extends AppCompatActivity {
 
     private void home() {
         //mTextMessage.setText(R.string.title_home);
+        new Thread(new Client()).start();
+
     }
 
     @Override

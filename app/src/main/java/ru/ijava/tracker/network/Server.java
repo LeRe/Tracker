@@ -1,5 +1,7 @@
 package ru.ijava.tracker.network;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +64,8 @@ public class Server implements Runnable {
                     /*do nothing*/
                 }
             }
-            System.err.println("Client processing finished");
+
+            Log.i("RELE","Server: Client processing finished");
         }
 
         private void writeResponse(String s) throws Throwable {
@@ -83,6 +86,8 @@ public class Server implements Runnable {
                 if(s == null || s.trim().length() == 0) {
                     break;
                 }
+
+                Log.i("RELE", "Server: Client request - " + s);
             }
         }
     }

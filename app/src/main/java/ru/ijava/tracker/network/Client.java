@@ -13,41 +13,62 @@ import java.net.UnknownHostException;
  * Created by rele on 7/25/17.
  */
 
-public class Client {
+public class Client implements Runnable {
 
     public static final String HOST_NAME = "127.0.0.1";
     public static final int PORT = 2222;
 
     public Client() {
+
+    }
+
+    @Override
+    public void run() {
         try {
-
-            Socket kkSocket = new Socket(HOST_NAME, PORT);
-            PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
+            Log.i("RELE", "Client: task run...");
+            Socket socket = new Socket(HOST_NAME, PORT);
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(kkSocket.getInputStream()));
-
-
-            BufferedReader stdIn =
-                    new BufferedReader(new InputStreamReader(System.in));
+                    new InputStreamReader(socket.getInputStream()));
             String fromServer;
-            String fromUser;
+
+//            BufferedReader stdIn =
+//                    new BufferedReader(new InputStreamReader(System.in));
+//            String fromUser;
+
+            //Write to server
+            out.println("HELLO!!!  111\r\n");
+            out.println("\r\n");
 
             while ((fromServer = in.readLine()) != null) {
-                System.out.println("Server: " + fromServer);
+                Log.i("RELE", "Client: Server response - " + fromServer);
+
+                //nikogda ne proizoidet
                 if (fromServer.equals("Bye."))
                     break;
 
-                fromUser = stdIn.readLine();
-                if (fromUser != null) {
-                    System.out.println("Client: " + fromUser);
-                    out.println(fromUser);
-                }
+//                fromUser = stdIn.readLine();
+//                if (fromUser != null) {
+//                    System.out.println("Client: " + fromUser);
+//                    out.println(fromUser);
+//                }
+
+                //Write to server
+                out.println("HELLO!!!  222\r\n");
+                out.println("\r\n");
             }
+
+            //Write to server
+            out.println("HELLO!!!  333\r\n");
+            out.println("\r\n");
+
         } catch (UnknownHostException e) {
-            Log.i("RELE", "Don't know about host " + HOST_NAME);
+            Log.i("RELE", "Client: Don't know about host " + HOST_NAME);
         } catch (IOException e) {
-            Log.i("RELE", "Couldn't get I/O for the connection to " +
+            Log.i("RELE", "Client: Couldn't get I/O for the connection to " +
                     HOST_NAME);
         }
+
+        Log.i("RELE", "Client: My task end!!!");
     }
 }
