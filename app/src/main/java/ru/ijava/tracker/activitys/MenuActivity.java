@@ -6,18 +6,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.PositionSystem;
-import ru.ijava.tracker.model.ServerService;
-import ru.ijava.tracker.model.TrackerService;
+import ru.ijava.tracker.services.ServerService;
+import ru.ijava.tracker.services.TrackerService;
 
 public class MenuActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;

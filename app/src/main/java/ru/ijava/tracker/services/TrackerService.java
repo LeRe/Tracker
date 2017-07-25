@@ -1,4 +1,4 @@
-package ru.ijava.tracker.model;
+package ru.ijava.tracker.services;
 
 import android.Manifest;
 import android.app.Service;
@@ -14,6 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import ru.ijava.tracker.db.DBHelper;
+import ru.ijava.tracker.model.Device;
 
 /**
  * Created by rele on 7/10/17.

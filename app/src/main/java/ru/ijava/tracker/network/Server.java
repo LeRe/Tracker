@@ -1,9 +1,4 @@
-package ru.ijava.tracker.model;
-
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
+package ru.ijava.tracker.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,34 +8,27 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
 /**
- * Created by levchenko on 20.07.2017.
+ * Created by rele on 7/25/17.
  */
 
-public class ServerService extends Service {
+public class Server implements Runnable {
+
+    public static final int PORT = 2222;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        new Thread(new SocketServer()).start();
-
-        return START_STICKY;
-    }
-
-    private static class SocketServer implements Runnable {
-        @Override
-        public void run() {
-            try {
-                ServerSocket ss = new ServerSocket(2222);
-                while (true) {
-                    Socket s = ss.accept();
-                    new Thread(new SocketProcessor(s)).start();
-                }
+    public void run() {
+        try {
+            ServerSocket ss = new ServerSocket(PORT);
+            while (true) {
+                Socket s = ss.accept();
+                new Thread(new SocketProcessor(s)).start();
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -99,9 +87,5 @@ public class ServerService extends Service {
         }
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+
 }

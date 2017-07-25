@@ -19,9 +19,9 @@
         </activity>
         <activity android:name=".activitys.MapActivity" />
         <activity android:name=".activitys.DBActivity" />
-        <service android:name=".model.TrackerService"
+        <service android:name=".services.TrackerService"
             android:exported="false" />
-        <service android:name=".model.ServerService"
+        <service android:name=".services.ServerService"
             android:exported="false" />
     </application>
 
