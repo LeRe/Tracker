@@ -25,7 +25,9 @@ public class Client implements Runnable {
     @Override
     public void run() {
         try {
+
             Log.i("RELE", "Client: task run...");
+
             Socket socket = new Socket(HOST_NAME, PORT);
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
@@ -63,9 +65,9 @@ public class Client implements Runnable {
             out.println("\r\n");
 
         } catch (UnknownHostException e) {
-            Log.i("RELE", "Client: Don't know about host " + HOST_NAME);
+            Log.i("RELE", "Client: UnknownHostException Don't know about host " + HOST_NAME);
         } catch (IOException e) {
-            Log.i("RELE", "Client: Couldn't get I/O for the connection to " +
+            Log.i("RELE", "Client: IOException. Couldn't get I/O for the connection to " +
                     HOST_NAME);
         }
 

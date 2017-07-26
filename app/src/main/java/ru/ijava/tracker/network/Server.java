@@ -53,8 +53,8 @@ public class Server implements Runnable {
 
         public void run() {
             try {
-                readInputHeaders();
-                writeResponse("<html><body><h1>Hello WORLD!!!</h1></body></html>");
+                readClientRequest();
+                writeResponse("Hello, it's say SERVER");
             } catch (Throwable t) {
                 /*do nothing*/
             } finally {
@@ -69,17 +69,14 @@ public class Server implements Runnable {
         }
 
         private void writeResponse(String s) throws Throwable {
-            String response = "HTTP/1.1 200 OK\r\n" +
-                    "Server: YarServer/2009-09-09\r\n" +
-                    "Content-Type: text/html\r\n" +
-                    "Content-Length: " + s.length() + "\r\n" +
-                    "Connection: close\r\n\r\n";
-            String result = response + s;
+            String header = "<<<HEADER>>>\r\n";
+
+            String result = header + s;
             os.write(result.getBytes());
             os.flush();
         }
 
-        private void readInputHeaders() throws Throwable {
+        private void readClientRequest() throws Throwable {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             while(true) {
                 String s = br.readLine();
@@ -91,6 +88,5 @@ public class Server implements Runnable {
             }
         }
     }
-
 
 }
