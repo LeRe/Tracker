@@ -15,6 +15,7 @@ import java.util.TimerTask;
 
 import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
+import ru.ijava.tracker.model.PositionSystem;
 
 /**
  * Created by rele on 7/10/17.
@@ -35,27 +36,7 @@ public class TrackerService extends Service {
                 Context context = getApplicationContext();
                 Device device = new Device(context);
 
-                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-                String locationProvider = LocationManager.GPS_PROVIDER;
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                android.location.Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-
-                if(lastKnownLocation != null) {
-                    ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
-                    device.setCurrentLocation(lastKnownLocation);
-
-                    DBHelper sqliteDB = new DBHelper(getApplicationContext());
-                    sqliteDB.saveDeviceLocation(device);
-                }
+                new PositionSystem(context, device);
             }
         };
 

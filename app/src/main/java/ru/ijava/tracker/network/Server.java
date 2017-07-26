@@ -1,15 +1,10 @@
 package ru.ijava.tracker.network;
 
-import android.util.Log;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 
 /**
  * Created by rele on 7/25/17.
@@ -34,17 +29,19 @@ public class Server implements Runnable {
         }
     }
 
-    private static class SocketProcessor implements Runnable {
+    private static class SocketProcessor implements Runnable, NetworkObject {
 
         private Socket s;
-        private InputStream is;
-        private OutputStream os;
+        private ObjectOutputStream objectOutputStream;
+        private ObjectInputStream objectInputStream;
+
+        private boolean closeConnection = false;
 
         private SocketProcessor(Socket s) {
             this.s = s;
             try {
-                this.is = s.getInputStream();
-                this.os = s.getOutputStream();
+                this.objectOutputStream = new ObjectOutputStream(s.getOutputStream());
+                this.objectInputStream = new ObjectInputStream(s.getInputStream());
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -53,8 +50,11 @@ public class Server implements Runnable {
 
         public void run() {
             try {
-                readClientRequest();
-                writeResponse("Hello, it's say SERVER");
+                while (!closeConnection) {
+                    readClientRequest();
+
+                    writeResponse(generateResponse());
+                }
             } catch (Throwable t) {
                 /*do nothing*/
             } finally {
@@ -64,28 +64,32 @@ public class Server implements Runnable {
                     /*do nothing*/
                 }
             }
-
-            Log.i("RELE","Server: Client processing finished");
         }
 
-        private void writeResponse(String s) throws Throwable {
-            String header = "<<<HEADER>>>\r\n";
+        private Message generateResponse() {
+            Message message = new Message();
+            message.action = Message.ACTION_LOG_I;
+            message.content = "Hello, it's responce from SERVER";
 
-            String result = header + s;
-            os.write(result.getBytes());
-            os.flush();
+            return message;
+        }
+
+        private void writeResponse(Message message) throws Throwable {
+            objectOutputStream.writeObject(message);
+            objectOutputStream.flush();
         }
 
         private void readClientRequest() throws Throwable {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            while(true) {
-                String s = br.readLine();
-                if(s == null || s.trim().length() == 0) {
-                    break;
-                }
-
-                Log.i("RELE", "Server: Client request - " + s);
+            Message message = (Message) objectInputStream.readObject();
+            if(message != null) {
+                MessageHandler messageHandler = new MessageHandler(this);
+                messageHandler.process(message);
             }
+        }
+
+        @Override
+        public void closeConection() {
+            this.closeConnection = true;
         }
     }
 
