@@ -1,14 +1,12 @@
 package ru.ijava.tracker.network;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -19,7 +17,8 @@ import ru.ijava.tracker.model.Device;
  * Created by rele on 7/25/17.
  */
 
-public class Client implements Runnable, NetworkObject {
+public class Client implements Runnable, NetworkDevice {
+    private MessageHandler messageHandler;
 
     public static final String HOST_NAME = "127.0.0.1";
     public static final int PORT = 2222;
@@ -31,7 +30,8 @@ public class Client implements Runnable, NetworkObject {
 
     ArrayList<Message> messagesQueue;
 
-    public Client() {
+    public Client(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
         messagesQueue = new ArrayList<Message>();
     }
 
@@ -44,15 +44,16 @@ public class Client implements Runnable, NetworkObject {
             objectInputStream = new ObjectInputStream(socket.getInputStream());
 
             //Write to server   send object, or send objects from queue
-            Message message = new Message();
-            message.action = Message.ACTION_LOG_I;
-            message.content = "Hello, i client, this request for server!!!!! ";
-            objectOutputStream.writeObject(message);
+//            Message message = new Message();
+//            message.action = Message.ACTION_LOG_I;
+//            message.content = "Hello, i client, this request for server!!!!! ";
+//            objectOutputStream.writeObject(message);
 
             while (!closeConnection) {
 
                 if(messagesQueue.size() > 0)
                 {
+                    Message message;
                     message = messagesQueue.get(0);
                     objectOutputStream.writeObject(message);
                     messagesQueue.remove(0);
@@ -65,9 +66,10 @@ public class Client implements Runnable, NetworkObject {
                 //Хотя лучше обрабатывать эту очередь в отдельном потоке...!!!...???
 
                 //Отвалимся от сервера и сами выйдем
-                message = new Message();
-                message.action = Message.ACTION_CLOSE_CONECTION;
-                objectOutputStream.writeObject(message);
+//                message = new Message();
+//                message.action = Message.ACTION_CLOSE_CONECTION;
+//                objectOutputStream.writeObject(message);
+//
                 this.closeConection();
             }
 
@@ -94,7 +96,6 @@ public class Client implements Runnable, NetworkObject {
         }
 
         if(message != null) {
-            MessageHandler messageHandler = new MessageHandler(this);
             messageHandler.process(message);
         }
     }
@@ -105,16 +106,9 @@ public class Client implements Runnable, NetworkObject {
     }
 
     public void saveLocation(Device device, Location location) {
-
         if(device != null && location != null){
-
-            //создаем  Message для передачи серверу
             Message message = new Message(Message.Action.SAVE_LOCATION, device, location);
-
             messagesQueue.add(message);
-
         }
-
     }
-
 }

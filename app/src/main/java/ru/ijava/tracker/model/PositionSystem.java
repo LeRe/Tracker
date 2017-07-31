@@ -13,6 +13,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import ru.ijava.tracker.activitys.MenuActivity;
 import ru.ijava.tracker.db.DBHelper;
+import ru.ijava.tracker.network.Client;
+import ru.ijava.tracker.network.MessageHandler;
+
 import android.location.Location;
 
 /**
@@ -87,9 +90,14 @@ public class PositionSystem {
     }
 
     private void saveDeviceLocation(Context context, Device device) {
-        DBHelper sqliteDB = new DBHelper(context);
-        sqliteDB.saveDeviceLocation(device);
-        sqliteDB.close();
+//        DBHelper sqliteDB = new DBHelper(context);
+//        sqliteDB.saveDeviceLocation(device);
+//        sqliteDB.close();
+
+        MessageHandler messageHandler = new MessageHandler(context);
+        Client client = new Client(messageHandler);
+        new Thread(client).start();
+        client.saveLocation(device, device.getCurrentLocation());
     }
 
     public void determineCurrentLocation() {

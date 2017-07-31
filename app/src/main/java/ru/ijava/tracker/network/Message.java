@@ -13,17 +13,54 @@ import ru.ijava.tracker.model.Device;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    enum Action {CLOSE_CONECTION, SAVE_LOCATION, LOG_I}
+    public enum Action {CLOSE_CONECTION, SAVE_LOCATION, LOG_I}
 
-    public static final int ACTION_CLOSE_CONECTION = 0;
-    public static final int ACTION_SAVE_LOCATION = 1;
-    public static final int ACTION_LOG_I = 100;
+    public Action action;
 
-    public int action;
-    public String content;
+    private String deviceId;
+    private String deviceNickName;
 
-    public Message(Enum<Action> action, Device device, Location location){
+    private long locationTime;
+    private double locationLatitude;
+    private double locationLongitude;
+    private String locationProvider;
 
+    public Message(Action action, Device device, Location location){
+        this.action = action;
+        this.parseDevice(device);
+        this.parseLocation(location);
     }
 
+    private void parseDevice(Device device) {
+        this.deviceId = device.getId();
+        this.deviceNickName = device.getNickName();
+    }
+
+    private void parseLocation(Location location) {
+        this.locationTime = location.getTime();
+        this.locationLatitude = location.getLatitude();
+        this.locationLongitude = location.getLongitude();
+        this.locationProvider = location.getProvider();
+    }
+
+    public Device compileDevice() {
+        Device device = null;
+        if(deviceId != null && deviceNickName != null)
+        {
+            device = new Device(deviceId, deviceNickName);
+        }
+        return device;
+    }
+
+    public Location compileLocation() {
+        Location location = null;
+        if(locationTime != 0l && locationLongitude != 0d && locationLatitude != 0d && locationProvider != null)
+        {
+            location = new Location(locationProvider);
+            location.setTime(locationTime);
+            location.setLongitude(locationLongitude);
+            location.setLatitude(locationLatitude);
+        }
+        return location;
+    }
 }

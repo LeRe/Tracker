@@ -63,8 +63,6 @@ public class MenuActivity extends AppCompatActivity {
 
     private void home() {
         //mTextMessage.setText(R.string.title_home);
-        new Thread(new Client()).start();
-
     }
 
     @Override

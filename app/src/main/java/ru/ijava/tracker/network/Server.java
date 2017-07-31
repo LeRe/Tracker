@@ -1,5 +1,7 @@
 package ru.ijava.tracker.network;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,7 +14,14 @@ import java.net.Socket;
 
 public class Server implements Runnable {
 
+    private static MessageHandler messageHandler;
+
     public static final int PORT = 2222;
+
+    public Server(MessageHandler messageHandler)
+    {
+        this.messageHandler = messageHandler;
+    }
 
     @Override
     public void run() {
@@ -29,7 +38,7 @@ public class Server implements Runnable {
         }
     }
 
-    private static class SocketProcessor implements Runnable, NetworkObject {
+    private static class SocketProcessor implements Runnable, NetworkDevice {
 
         private Socket s;
         private ObjectOutputStream objectOutputStream;
@@ -67,10 +76,9 @@ public class Server implements Runnable {
         }
 
         private Message generateResponse() {
-            Message message = new Message();
-            message.action = Message.ACTION_LOG_I;
-            message.content = "Hello, it's responce from SERVER";
-
+            Message message = null;//new Message();
+            //message.action = Message.ACTION_LOG_I;
+            //message.content = "Hello, it's responce from SERVER";
             return message;
         }
 
@@ -82,7 +90,6 @@ public class Server implements Runnable {
         private void readClientRequest() throws Throwable {
             Message message = (Message) objectInputStream.readObject();
             if(message != null) {
-                MessageHandler messageHandler = new MessageHandler(this);
                 messageHandler.process(message);
             }
         }
