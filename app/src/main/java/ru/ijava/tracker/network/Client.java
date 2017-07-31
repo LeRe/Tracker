@@ -1,5 +1,6 @@
 package ru.ijava.tracker.network;
 
+import android.location.Location;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -10,6 +11,9 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+
+import ru.ijava.tracker.model.Device;
 
 /**
  * Created by rele on 7/25/17.
@@ -25,8 +29,10 @@ public class Client implements Runnable, NetworkObject {
 
     private boolean closeConnection = false;
 
-    public Client() {
+    ArrayList<Message> messagesQueue;
 
+    public Client() {
+        messagesQueue = new ArrayList<Message>();
     }
 
     @Override
@@ -44,6 +50,14 @@ public class Client implements Runnable, NetworkObject {
             objectOutputStream.writeObject(message);
 
             while (!closeConnection) {
+
+                if(messagesQueue.size() > 0)
+                {
+                    message = messagesQueue.get(0);
+                    objectOutputStream.writeObject(message);
+                    messagesQueue.remove(0);
+                }
+
                 //wait server response
                 readServerRequest();
 
@@ -88,6 +102,19 @@ public class Client implements Runnable, NetworkObject {
     @Override
     public void closeConection() {
         this.closeConnection = true;
+    }
+
+    public void saveLocation(Device device, Location location) {
+
+        if(device != null && location != null){
+
+            //создаем  Message для передачи серверу
+            Message message = new Message(Message.Action.SAVE_LOCATION, device, location);
+
+            messagesQueue.add(message);
+
+        }
+
     }
 
 }
