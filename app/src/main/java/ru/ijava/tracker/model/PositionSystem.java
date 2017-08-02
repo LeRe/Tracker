@@ -12,11 +12,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import ru.ijava.tracker.activitys.MenuActivity;
-import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.network.Client;
 import ru.ijava.tracker.network.MessageHandler;
-
-import android.location.Location;
 
 /**
  * Created by rele on 7/7/17.

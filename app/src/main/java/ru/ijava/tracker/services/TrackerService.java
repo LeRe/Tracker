@@ -1,19 +1,12 @@
 package ru.ijava.tracker.services;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-
 import java.util.Timer;
 import java.util.TimerTask;
-
-import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.PositionSystem;
 

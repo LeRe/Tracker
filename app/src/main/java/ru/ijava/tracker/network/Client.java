@@ -1,6 +1,5 @@
 package ru.ijava.tracker.network;
 
-import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
@@ -20,8 +19,8 @@ import ru.ijava.tracker.model.Device;
 public class Client implements Runnable, NetworkDevice {
     private MessageHandler messageHandler;
 
-    public static final String HOST_NAME = "127.0.0.1";
-    public static final int PORT = 2222;
+    private final String HOST_NAME;
+    private final int PORT;
 
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
@@ -33,6 +32,9 @@ public class Client implements Runnable, NetworkDevice {
     public Client(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
         messagesQueue = new ArrayList<Message>();
+
+        this.HOST_NAME = Server.LOCAL_HOST_NAME;
+        this.PORT = Server.PORT;
     }
 
     @Override
@@ -51,6 +53,8 @@ public class Client implements Runnable, NetworkDevice {
 
             while (!closeConnection) {
 
+                //Здесь можно проверить не пустали очереь сообщений от клиента и отправить их серверу
+                //Хотя лучше обрабатывать эту очередь в отдельном потоке...!!!...???
                 if(messagesQueue.size() > 0)
                 {
                     Message message;
@@ -62,9 +66,6 @@ public class Client implements Runnable, NetworkDevice {
                 //wait server response
                 readServerRequest();
 
-                //Здесь можно проверить не пустали очереь сообщений от клиента и отправить их серверу
-                //Хотя лучше обрабатывать эту очередь в отдельном потоке...!!!...???
-
                 //Отвалимся от сервера и сами выйдем
 //                message = new Message();
 //                message.action = Message.ACTION_CLOSE_CONECTION;
@@ -72,7 +73,6 @@ public class Client implements Runnable, NetworkDevice {
 //
                 this.closeConection();
             }
-
         } catch (UnknownHostException e) {
             Log.i("RELE", "Client: UnknownHostException Don't know about host " + HOST_NAME);
         } catch (IOException e) {
@@ -83,7 +83,6 @@ public class Client implements Runnable, NetworkDevice {
     }
 
     private void readServerRequest() {
-
         Message message = null;
         try {
             message = (Message) objectInputStream.readObject();
@@ -94,7 +93,6 @@ public class Client implements Runnable, NetworkDevice {
         catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
         if(message != null) {
             messageHandler.process(message);
         }

@@ -39,10 +39,9 @@ public class MenuActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_dashboard:
                     dashboard();
-                    //startMapActivity();
                     return true;
-                case R.id.navigation_notifications:
-                    notifications();
+                case R.id.navigation_map:
+                    startMapActivity();
                     return true;
                 case R.id.navigation_db_statistics:
                     startDBStatisticsActivity();
@@ -52,10 +51,6 @@ public class MenuActivity extends AppCompatActivity {
         }
 
     };
-
-    private void notifications() {
-        //mTextMessage.setText(R.string.title_notifications);
-    }
 
     private void dashboard() {
         //mTextMessage.setText(R.string.title_dashboard);
@@ -102,13 +97,15 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
             case R.id.navigation_dashboard:
                 dashboard();
-                //startMapActivity();
                 return true;
-            case R.id.navigation_notifications:
-                notifications();
+            case R.id.navigation_map:
+                startMapActivity();
                 return true;
             case R.id.navigation_db_statistics:
                 startDBStatisticsActivity();
+                return true;
+            case R.id.navigation_settings:
+                startSettingsActivity();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -131,7 +128,17 @@ public class MenuActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void startSettingsActivity() {
+        Intent intent = new Intent(this,SettingsActivity.class);
+        startActivity(intent);
+    }
+
     public void startMapActivity() {
+        if(device == null || device.getLocationsHistory() == null)
+        {
+            loadRequestedPositions(POSITIONS_LAST);
+        }
+
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra(MapActivity.DEVICE_KEY, device);
         startActivity(intent);
@@ -156,7 +163,6 @@ public class MenuActivity extends AppCompatActivity {
             // кладем их также в список вывода принадлежащий объекту Девисе,
             // на их основе будем строить маршрут
             sqliteDB.getDeviceLocationsHistory(device);
-
         }
     }
 }
