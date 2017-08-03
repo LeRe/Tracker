@@ -1,14 +1,17 @@
 package ru.ijava.tracker.activitys;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
@@ -46,6 +49,9 @@ public class MenuActivity extends AppCompatActivity {
                 case R.id.navigation_db_statistics:
                     startDBStatisticsActivity();
                     return true;
+                case R.id.navigation_settings:
+                    startSettingsActivity();
+                    return true;
             }
             return false;
         }
@@ -54,6 +60,8 @@ public class MenuActivity extends AppCompatActivity {
 
     private void dashboard() {
         //mTextMessage.setText(R.string.title_dashboard);
+
+        readingPreferences();
     }
 
     private void home() {
@@ -131,6 +139,27 @@ public class MenuActivity extends AppCompatActivity {
     private void startSettingsActivity() {
         Intent intent = new Intent(this,SettingsActivity.class);
         startActivity(intent);
+    }
+
+    //TODO необходимо отслеживать изменение настроек и в случае изменения настроек перезапускать сервисы с новыми настройками. Те сервисы которые зависят от этих настроек
+    private void readingPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String nickname = sharedPreferences.getString("edit_text_preference_nickname", "NO_PREFERENCE");
+        String remoteServerAddress = sharedPreferences.getString("edit_text_preference_server", "NO_PREFERENCE");
+        boolean onlyServer = sharedPreferences.getBoolean("check_box_preference_only_server",false);
+        String serverMessage;
+        if(onlyServer) {
+            serverMessage = "Only server ENABLE!!!";
+        }
+        else {
+            serverMessage = "Only server DISABLE...";
+        }
+
+        StringBuilder message = new StringBuilder();
+        message.append(nickname).append("\r\n").append(remoteServerAddress).append("\r\n").append(serverMessage);
+
+        Toast.makeText(this, message,Toast.LENGTH_SHORT).show();
     }
 
     public void startMapActivity() {

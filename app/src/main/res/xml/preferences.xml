@@ -5,15 +5,18 @@
         android:key="edit_text_preference_nickname"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="Enter nickname here" />
+        android:title="Device nickname"
+        />
     <EditTextPreference
         android:defaultValue="127.0.0.1"
         android:key="edit_text_preference_server"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="Remote server address" />
+        android:title="Remote server address"
+        />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="check_box_preference_only_server"
-        android:title="Only server functions" />
+        android:title="Only server functions"
+        />
 </PreferenceScreen>

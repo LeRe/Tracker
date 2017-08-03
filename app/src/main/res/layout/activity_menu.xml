@@ -17,7 +17,6 @@
         <fragment class="ru.ijava.tracker.fragments.DetailSelection"
             android:id="@+id/fragment_detail_selection"
             android:layout_width="match_parent" android:layout_height="wrap_content" />
-
     </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView

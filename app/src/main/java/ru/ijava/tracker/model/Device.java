@@ -3,9 +3,12 @@ package ru.ijava.tracker.model;
 import android.content.Context;
 import com.google.android.gms.iid.InstanceID;
 import java.util.ArrayList;
+
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 
 /**
  * Created by levchenko on 22.06.2017.
@@ -37,8 +40,9 @@ public class Device implements Parcelable {
         String iid = InstanceID.getInstance(context).getId();
         setId(iid);
 
-        //TODO read nickName from preferences
-        setNickName("PreferenceRELE");
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String deviceNickName = sharedPreferences.getString("edit_text_preference_nickname", "NO_PREFERENCE");
+        setNickName(deviceNickName);
     }
 
     public Device(String id, String nickName) {
