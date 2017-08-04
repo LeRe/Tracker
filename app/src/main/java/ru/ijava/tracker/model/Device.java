@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Created by levchenko on 22.06.2017.
@@ -40,9 +41,8 @@ public class Device implements Parcelable {
         String iid = InstanceID.getInstance(context).getId();
         setId(iid);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String deviceNickName = sharedPreferences.getString("edit_text_preference_nickname", "NO_PREFERENCE");
-        setNickName(deviceNickName);
+        Preferences preferences = Preferences.getInstance(context);
+        setNickName(preferences.getNickname());
     }
 
     public Device(String id, String nickName) {
