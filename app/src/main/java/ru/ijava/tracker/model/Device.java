@@ -16,10 +16,10 @@ import android.util.Log;
  */
 
 public class Device implements Parcelable {
-    private String id;
-    private String nickName;
-    private Location currentLocation;
-    private ArrayList<Location> locationsHistory;
+    protected String id;
+    protected String nickName;
+    protected Location currentLocation;
+    protected ArrayList<Location> locationsHistory;
 
     public void putLocationToHistory(Location location) {
         if(this.locationsHistory == null) {
@@ -35,14 +35,6 @@ public class Device implements Parcelable {
 
     public void initializeLocationsHistory() {
         this.locationsHistory = new ArrayList<Location>();
-    }
-
-    public Device(Context context) {
-        String iid = InstanceID.getInstance(context).getId();
-        setId(iid);
-
-        Preferences preferences = Preferences.getInstance(context);
-        setNickName(preferences.getNickname());
     }
 
     public Device(String id, String nickName) {

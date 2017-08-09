@@ -24,17 +24,17 @@ public class PositionSystem {
 
     private Activity activity;
     private Context context;
-    private Device device;
+    private PrimaryDevice primaryDevice;
 
-    public PositionSystem(Activity activity, Device device) {
+    public PositionSystem(Activity activity, PrimaryDevice primaryDevice) {
         this.activity = activity;
-        this.device = device;
+        this.primaryDevice = primaryDevice;
         this.determineCurrentLocation();
     }
 
-    public PositionSystem(Context context, Device device) {
+    public PositionSystem(Context context, PrimaryDevice primaryDevice) {
         this.context = context;
-        this.device = device;
+        this.primaryDevice = primaryDevice;
         this.determineCurrentLocation();
     }
 
@@ -53,9 +53,9 @@ public class PositionSystem {
             fusedLocationClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<android.location.Location>() {
                 @Override
                 public void onSuccess(android.location.Location location) {
-                    if (location != null && device != null) {
-                        device.setCurrentLocation(location);
-                        saveDeviceLocation(activity.getApplicationContext(), device);
+                    if (location != null && primaryDevice != null) {
+                        primaryDevice.setCurrentLocation(location);
+                        saveDeviceLocation(activity.getApplicationContext(), primaryDevice);
                     }
                 }
             });
@@ -80,9 +80,9 @@ public class PositionSystem {
 
         if(lastKnownLocation != null) {
             ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
-            device.setCurrentLocation(lastKnownLocation);
+            primaryDevice.setCurrentLocation(lastKnownLocation);
 
-            saveDeviceLocation(context, device);
+            saveDeviceLocation(context, primaryDevice);
         }
     }
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.ArrayList;
+
 /**
  * Created by levchenko on 04.08.2017.
  */
@@ -17,6 +19,25 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
     private String nickname;
     private String remoteServerAddress;
     private boolean onlyServer;
+
+    ArrayList<ChangePreferenceListener> listChangePreferenceListeners;
+
+    public interface ChangePreferenceListener {
+        void updatePreference(Preferences preferences);
+    }
+
+    private void updateListeners() {
+        for (ChangePreferenceListener listChangePreferenceListener : listChangePreferenceListeners) {
+            listChangePreferenceListener.updatePreference(this);
+        }
+    }
+
+    public void addChangePreferenceListener(ChangePreferenceListener changePreferenceListener) {
+        if(listChangePreferenceListeners == null) {
+            listChangePreferenceListeners = new ArrayList<ChangePreferenceListener>();
+        }
+        listChangePreferenceListeners.add(changePreferenceListener);
+    }
 
     private Preferences(Context context) {
         if(context != null) {
@@ -64,5 +85,7 @@ public class Preferences implements SharedPreferences.OnSharedPreferenceChangeLi
                 onlyServer = sharedPreferences.getBoolean(KEY_PREF_ONLY_SERVER_FUNCTIONS,false);
                 break;
         }
+
+        updateListeners();
     }
 }

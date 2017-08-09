@@ -16,8 +16,8 @@ import android.widget.Toast;
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
-import ru.ijava.tracker.model.PositionSystem;
-import ru.ijava.tracker.network.Client;
+import ru.ijava.tracker.model.Preferences;
+import ru.ijava.tracker.model.PrimaryDevice;
 import ru.ijava.tracker.services.ServerService;
 import ru.ijava.tracker.services.TrackerService;
 
@@ -29,7 +29,7 @@ public class MenuActivity extends AppCompatActivity {
 
     //private TextView mTextMessage;
     private Device device;
-    PositionSystem positionSystem;
+    //PositionSystem positionSystem;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -77,8 +77,20 @@ public class MenuActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        device = new Device(this);
-        positionSystem = new PositionSystem(this, device);
+        PrimaryDevice primaryDevice;
+        try {
+            primaryDevice = PrimaryDevice.getInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            primaryDevice = PrimaryDevice.getInstance(this);
+        }
+
+        Preferences preferences = Preferences.getInstance(this);
+        preferences.addChangePreferenceListener(primaryDevice);
+
+        device = primaryDevice;//new Device(this);
+
+        //positionSystem = new PositionSystem(this, primaryDevice);
 
 
         //start service
