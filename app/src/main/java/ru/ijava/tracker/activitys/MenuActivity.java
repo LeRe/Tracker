@@ -1,17 +1,14 @@
 package ru.ijava.tracker.activitys;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
@@ -19,13 +16,29 @@ import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.Preferences;
 import ru.ijava.tracker.model.PrimaryDevice;
 import ru.ijava.tracker.services.ServerService;
-import ru.ijava.tracker.services.TrackerService;
 
 public class MenuActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
     public static final int POSITIONS_LAST = 0;
     public static final int POSITIONS_ALL = 1;
+
+    /**
+     *  TODO ********************
+     *  TODO Global TODOs list!!!
+     *  TODO 1. Рассмотреть вопрос о переносе запуска TrackerService в PrimaryDevice
+     *  TODO        Логика прежняя: сервис служит цели определения позиции устройства.
+     *  TODO        Устройство у нас это PrimaryDevice, вот пусть он и запускает этот сервис.
+     *  TODO        B занимается им, незачем тянуть эти закуски и дергать их из GUI.
+     * TODO УЖЕ СДЕЛАНО, ПРОВЕРЯЕМ!!!
+     *
+     *  TODO 2. Затащить проверку разрешения на определение позиции в PrimaryDevice
+     *   TODO надо запустить проверку когда пользователь смотрит на активити,
+     *   TODO    так как в тракер сервисе мы не увидим запрос
+     *
+     *  TODO ********************
+     *
+     *
+     * */
 
     //private TextView mTextMessage;
     private Device device;
@@ -46,8 +59,8 @@ public class MenuActivity extends AppCompatActivity {
                 case R.id.navigation_map:
                     startMapActivity();
                     return true;
-                case R.id.navigation_db_statistics:
-                    startDBStatisticsActivity();
+                case R.id.navigation_tools:
+                    startToolsActivity();
                     return true;
                 case R.id.navigation_settings:
                     startSettingsActivity();
@@ -61,7 +74,6 @@ public class MenuActivity extends AppCompatActivity {
     private void dashboard() {
         //mTextMessage.setText(R.string.title_dashboard);
 
-        readingPreferences();
     }
 
     private void home() {
@@ -88,18 +100,7 @@ public class MenuActivity extends AppCompatActivity {
         Preferences preferences = Preferences.getInstance(this);
         preferences.addChangePreferenceListener(primaryDevice);
 
-        device = primaryDevice;//new Device(this);
-
-        //positionSystem = new PositionSystem(this, primaryDevice);
-
-
-        //start service
-        Intent intentTracker = new Intent(this, TrackerService.class);
-        startService(intentTracker);
-
-        //TODO need deBug
-        Intent intentServer = new Intent(this, ServerService.class);
-        startService(intentServer);
+        device = primaryDevice;
     }
 
     @Override
@@ -121,8 +122,8 @@ public class MenuActivity extends AppCompatActivity {
             case R.id.navigation_map:
                 startMapActivity();
                 return true;
-            case R.id.navigation_db_statistics:
-                startDBStatisticsActivity();
+            case R.id.navigation_tools:
+                startToolsActivity();
                 return true;
             case R.id.navigation_settings:
                 startSettingsActivity();
@@ -142,36 +143,14 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private void startDBStatisticsActivity() {
-        Intent intent = new Intent(this, DBActivity.class);
-        intent.putExtra(MapActivity.DEVICE_KEY, device);
+    private void startToolsActivity() {
+        Intent intent = new Intent(this, ToolsActivity.class);
         startActivity(intent);
     }
 
     private void startSettingsActivity() {
         Intent intent = new Intent(this,SettingsActivity.class);
         startActivity(intent);
-    }
-
-    //TODO необходимо отслеживать изменение настроек и в случае изменения настроек перезапускать сервисы с новыми настройками. Те сервисы которые зависят от этих настроек
-    private void readingPreferences() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String nickname = sharedPreferences.getString("edit_text_preference_nickname", "NO_PREFERENCE");
-        String remoteServerAddress = sharedPreferences.getString("edit_text_preference_server", "NO_PREFERENCE");
-        boolean onlyServer = sharedPreferences.getBoolean("check_box_preference_only_server",false);
-        String serverMessage;
-        if(onlyServer) {
-            serverMessage = "Only server ENABLE!!!";
-        }
-        else {
-            serverMessage = "Only server DISABLE...";
-        }
-
-        StringBuilder message = new StringBuilder();
-        message.append(nickname).append("\r\n").append(remoteServerAddress).append("\r\n").append(serverMessage);
-
-        Toast.makeText(this, message,Toast.LENGTH_SHORT).show();
     }
 
     public void startMapActivity() {

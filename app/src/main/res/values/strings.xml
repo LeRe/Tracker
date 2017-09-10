@@ -3,6 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_map">Map</string>
-    <string name="title_dbtools">DB tools</string>
+    <string name="title_tools">Tools</string>
     <string name="title_settings">Settings</string>
 </resources>

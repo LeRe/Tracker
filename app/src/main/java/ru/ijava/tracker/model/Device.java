@@ -29,7 +29,6 @@ public class Device implements Parcelable {
     }
 
     public ArrayList<Location> getLocationsHistory() {
-        //TODO Сделать сортировку по времени
         return locationsHistory;
     }
 

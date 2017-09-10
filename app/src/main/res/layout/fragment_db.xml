@@ -4,6 +4,12 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/button_dump_db"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Дамп базы (Log.i)" />
+
+    <Button
         android:id="@+id/button_clear_db"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

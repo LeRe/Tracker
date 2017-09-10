@@ -18,7 +18,6 @@ import ru.ijava.tracker.network.MessageHandler;
 /**
  * Created by rele on 7/7/17.
  */
-
 public class PositionSystem {
     public static final String TRACKER_PROVIDER = "tracker";
 
@@ -67,7 +66,7 @@ public class PositionSystem {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         String locationProvider = LocationManager.GPS_PROVIDER;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
+            // Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,

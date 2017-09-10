@@ -67,8 +67,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    //TODO Метод извлекающий местоположения из базы по id devic'a и складывающий эти местоположения в Аррэй лист девайсу, сортировать можно после складывания отсюда же
-
+    //Метод извлекающий местоположения из базы по id devic'a и складывающий эти местоположения в Аррэй лист девайсу
     public void getDeviceLocationsHistory(Device device) {
         String deviceId = device.getId();
 

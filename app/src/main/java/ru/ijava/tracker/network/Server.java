@@ -72,7 +72,8 @@ public class Server implements Runnable {
         }
 
         private Message generateResponse() {
-            Message message = null;//new Message();
+            Message message = null;
+            //new Message();
             //message.action = Message.ACTION_LOG_I;
             //message.content = "Hello, it's responce from SERVER";
             return message;

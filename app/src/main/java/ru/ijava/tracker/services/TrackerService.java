@@ -3,79 +3,61 @@ package ru.ijava.tracker.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import ru.ijava.tracker.model.PositionSystem;
 import ru.ijava.tracker.model.Preferences;
-import ru.ijava.tracker.model.PrimaryDevice;
 
 /**
  * Created by rele on 7/10/17.
  */
 
-public class TrackerService extends Service implements Preferences.ChangePreferenceListener {
-    private Timer timer;
-    private TimerTask timerTask;
-    private static final long TIMER_DELAY = 1000;
-    private static final long TIMER_PERIOD = 10 * 60 * 1000;
+public class TrackerService  extends Service {
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Preferences preferences = Preferences.getInstance(getApplicationContext());
-        preferences.addChangePreferenceListener(this);
+    private TrackerTask trackerTask;
+    private ServerTask serverTask;
 
-        if(!preferences.isOnlyServer()) {
-            prepareTask();
-            timer.schedule(timerTask, TIMER_DELAY, TIMER_PERIOD);
+    protected IBinder mBinder;
+
+    public TrackerService() {
+        mBinder = new LocalBinder();
+    }
+
+    public class LocalBinder extends Binder {
+        public TrackerService getService(){
+            return TrackerService.this;
         }
-        return START_STICKY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
     }
+
 
     @Override
-    public void updatePreference(Preferences preferences) {
-        if(preferences.isOnlyServer()) {
-            //Отключаем систему определения координат
-            if(timer != null) {
-                timer.cancel();
-                timer.purge();
-                timer = null;
-            }
-            Log.i("RELE", "Timer canseled...");
-        }
-        else {
-            //Включаем определение координат
-            prepareTask();
-            timer.schedule(timerTask, TIMER_DELAY, TIMER_PERIOD);
-            Log.i("RELE", "Timer scheduled!!!");
-        }
-    }
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
-    private void prepareTask() {
-        timer = new Timer();
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                Context context = getApplicationContext();
+        //Проверяем можно ли запустить Задачи и запускаем их если они не запущены
+        Context context = getApplicationContext();
+        Preferences preferences = Preferences.getInstance(context);
+        if(serverTask == null) {
+            serverTask = new ServerTask(context);
+        }
+        if(trackerTask == null) {
+            trackerTask = new TrackerTask(context);
+        }
 
-                PrimaryDevice primaryDevice;
-                try {
-                    primaryDevice = PrimaryDevice.getInstance();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    primaryDevice = PrimaryDevice.getInstance(context);
-                }
-                new PositionSystem(context, primaryDevice);
-            }
-        };
+        if(!preferences.isOnlyServer() && trackerTask.getStatus() ==false) {
+            trackerTask.runTask();
+        }
+
+        if(serverTask.getStatus() == false) {
+            serverTask.runTask();
+        }
+
+        return START_STICKY;
     }
 }

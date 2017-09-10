@@ -14,6 +14,37 @@ import ru.ijava.tracker.model.Device;
 
 /**
  * Created by rele on 7/25/17.
+ *
+ * TODO ^^^^^^^^^^^^^^^^^^^
+ * TODO Network tasks...
+ * TODO
+ * TODO 1. Отправлять только что определенное местоположение для хранения на удаленный и локальный сервер
+ * TODO
+ * TODO 2. Регистрация клиентского устройства на удаленном сервере
+ * TODO         В таблице device должна появляться запись об клиенте содержащая ID клиента и NickName
+ * TODO     Регистрация вероятно может происходить при сохранении местоположения устройства
+ * TODO
+ * TODO 3. Нисходящая синхронизация баз
+ * TODO     Клиент получает недостающии записи по устройствам
+ * TODO     Клиент получает записи о местах положения этих устройств
+ * TODO
+ * TODO
+ * TODO 4. Восходящая синхронизация баз
+ * TODO     Клиент выгружает на сервер информацию по своим местоположениям и своему устройству
+ * TODO     Проверяется вся ли информация есть на сервере, далее запрашиваем недостающии записи
+ * TODO     Клиент отправляет их, сервер сохраняет
+ * TODO
+ * TODO
+ * TODO Необходимо расщирить диагностику в программе
+ * TODO Должны выводиться сведения
+ * TODO     запушена ли система позиционирования
+ * TODO     Запущен ли сервер
+ * TODO     Сколько записей об устройсве
+ * TODO         id, nickname, count_locations_records, datetime_last_location_records
+ * TODO
+ * TODO
+ * TODO
+ * TODO
  */
 
 public class Client implements Runnable, NetworkDevice {
@@ -45,16 +76,8 @@ public class Client implements Runnable, NetworkDevice {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
 
-            //Write to server   send object, or send objects from queue
-//            Message message = new Message();
-//            message.action = Message.ACTION_LOG_I;
-//            message.content = "Hello, i client, this request for server!!!!! ";
-//            objectOutputStream.writeObject(message);
-
             while (!closeConnection) {
 
-                //Здесь можно проверить не пустали очереь сообщений от клиента и отправить их серверу
-                //Хотя лучше обрабатывать эту очередь в отдельном потоке...!!!...???
                 if(messagesQueue.size() > 0)
                 {
                     Message message;
@@ -66,11 +89,6 @@ public class Client implements Runnable, NetworkDevice {
                 //wait server response
                 readServerRequest();
 
-                //Отвалимся от сервера и сами выйдем
-//                message = new Message();
-//                message.action = Message.ACTION_CLOSE_CONECTION;
-//                objectOutputStream.writeObject(message);
-//
                 this.closeConection();
             }
         } catch (UnknownHostException e) {

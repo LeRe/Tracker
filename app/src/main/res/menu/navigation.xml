@@ -17,9 +17,9 @@
         android:title="@string/title_map" />
 
     <item
-        android:id="@+id/navigation_db_statistics"
-        android:icon="@drawable/ic_database_black_24dp"
-        android:title="@string/title_dbtools" />
+        android:id="@+id/navigation_tools"
+        android:icon="@drawable/ic_tools_black_24dp"
+        android:title="@string/title_tools" />
 
     <item
         android:id="@+id/navigation_settings"
