@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.StringBuilderPrinter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.ijava.tracker.model.Preferences;
 
 /**
@@ -16,7 +19,6 @@ import ru.ijava.tracker.model.Preferences;
  */
 
 public class TrackerService  extends Service {
-
     private TrackerTask trackerTask;
     private ServerTask serverTask;
 
@@ -37,7 +39,6 @@ public class TrackerService  extends Service {
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -61,5 +62,18 @@ public class TrackerService  extends Service {
         }
 
         return START_STICKY;
+    }
+
+    public List<AbstractTask> getAbstractTasks() {
+        List<AbstractTask> abstractTaskList = new ArrayList<AbstractTask>();
+
+        if(trackerTask != null) {
+            abstractTaskList.add(trackerTask);
+        }
+        if(serverTask != null) {
+            abstractTaskList.add(serverTask);
+        }
+
+        return abstractTaskList;
     }
 }

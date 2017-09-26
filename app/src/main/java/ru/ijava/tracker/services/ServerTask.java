@@ -21,14 +21,20 @@ public class ServerTask extends AbstractTask {
         server = new Server(messageHandler);
     }
 
+
     @Override
-    public boolean getStatus() {
+    protected void checkStatus() {
         if (thread != null) {
             taskEnable  = (thread.getState() != Thread.State.TERMINATED);
         }
         else {
             taskEnable = false;
         }
+    }
+
+    @Override
+    public boolean getStatus() {
+        checkStatus();
         return taskEnable;
     }
 
@@ -36,6 +42,7 @@ public class ServerTask extends AbstractTask {
     public void runTask() {
         thread = new Thread(server);
         thread.start();
+        checkStatus();
     }
 
     @Override

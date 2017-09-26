@@ -25,6 +25,7 @@ public class TrackerTask extends AbstractTask {
 
 
     public TrackerTask(Context context) {
+        taskName = "Tracker task";
 
         this.context = context;
 
@@ -70,6 +71,12 @@ public class TrackerTask extends AbstractTask {
                 new PositionSystem(context, primaryDevice);
             }
         };
+    }
+
+
+    @Override
+    protected void checkStatus() {
+        //nothing to do...
     }
 
     @Override

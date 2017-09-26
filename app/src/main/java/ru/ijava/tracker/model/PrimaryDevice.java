@@ -10,7 +10,9 @@ import android.util.Log;
 import com.google.android.gms.iid.InstanceID;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import ru.ijava.tracker.services.AbstractTask;
 import ru.ijava.tracker.services.ServiceStatus;
 import ru.ijava.tracker.services.SeviceStatusList;
 import ru.ijava.tracker.services.TrackerService;
@@ -50,8 +52,6 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
         }
     };
 
-
-
     public static PrimaryDevice getInstance() throws Exception {
         if(primaryDevice == null) {
             throw new Exception("Primary device not exist now");
@@ -72,7 +72,6 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
         Log.i("RELE", "NickName changed on " + nickName);
     }
 
-
     @Override
     public ArrayList<ServiceStatus> getServiceStatusList() {
         return serviceStatusList;
@@ -83,5 +82,13 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
         if(serviceStatus != null) {
             serviceStatusList.add(serviceStatus);
         }
+    }
+
+    public List<AbstractTask> getAbstractTaskList() {
+        List<AbstractTask> abstractTaskList = null;
+        if(mTrackerService != null) {
+            abstractTaskList = mTrackerService.getAbstractTasks();
+        }
+        return abstractTaskList;
     }
 }
