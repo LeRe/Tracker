@@ -15,7 +15,6 @@ import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
 import ru.ijava.tracker.model.Preferences;
 import ru.ijava.tracker.model.PrimaryDevice;
-import ru.ijava.tracker.services.ServerService;
 
 public class MenuActivity extends AppCompatActivity {
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;

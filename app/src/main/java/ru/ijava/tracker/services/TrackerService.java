@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.util.StringBuilderPrinter;
 
 import ru.ijava.tracker.model.Preferences;
 
@@ -50,7 +52,7 @@ public class TrackerService  extends Service {
             trackerTask = new TrackerTask(context);
         }
 
-        if(!preferences.isOnlyServer() && trackerTask.getStatus() ==false) {
+        if(!preferences.isOnlyServer() && trackerTask.getStatus() == false) {
             trackerTask.runTask();
         }
 

@@ -11,7 +11,6 @@ import com.google.android.gms.iid.InstanceID;
 
 import java.util.ArrayList;
 
-import ru.ijava.tracker.services.ServerService;
 import ru.ijava.tracker.services.ServiceStatus;
 import ru.ijava.tracker.services.SeviceStatusList;
 import ru.ijava.tracker.services.TrackerService;
@@ -37,10 +36,6 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
 
         Intent intentTracker = new Intent(context, TrackerService.class);
         context.startService(intentTracker);
-
-        //TODO перенести запуск в primaryDevice, добавить экземпляр в ServiceStatusList primaryDevice
-        Intent intentServer = new Intent(context, ServerService.class);
-        context.startService(intentServer);
 
         context.bindService(intentTracker, mConnection, Context.BIND_ABOVE_CLIENT);
     }

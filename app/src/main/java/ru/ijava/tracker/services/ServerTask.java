@@ -1,6 +1,7 @@
 package ru.ijava.tracker.services;
 
 import android.content.Context;
+import android.util.Log;
 
 import ru.ijava.tracker.network.MessageHandler;
 import ru.ijava.tracker.network.Server;
@@ -22,7 +23,12 @@ public class ServerTask extends AbstractTask {
 
     @Override
     public boolean getStatus() {
-        taskEnable  = (thread.getState() != Thread.State.TERMINATED);
+        if (thread != null) {
+            taskEnable  = (thread.getState() != Thread.State.TERMINATED);
+        }
+        else {
+            taskEnable = false;
+        }
         return taskEnable;
     }
 

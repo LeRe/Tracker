@@ -22,8 +22,6 @@
         <activity android:name=".activitys.SettingsActivity" />
         <service android:name=".services.TrackerService"
             android:exported="false" />
-        <service android:name=".services.ServerService"
-            android:exported="false" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
