@@ -14,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.ijava.tracker.model.PrimaryDevice;
+import ru.ijava.tracker.services.AbstractTask;
 import ru.ijava.tracker.services.ServiceStatus;
 
 /**
@@ -38,7 +39,8 @@ public class StatusServices extends Fragment {
             primaryDevice = PrimaryDevice.getInstance(getActivity());
         }
 
-        List<ServiceStatus> serviceStatusList = primaryDevice.getServiceStatusList();
+        //List<ServiceStatus> serviceStatusList = primaryDevice.getServiceStatusList();
+        List<AbstractTask> abstractTasksList = primaryDevice.getAbstractTaskList();
 
         strStatus = new StringBuilder();
         strStatus.append("\r\n");
@@ -51,10 +53,22 @@ public class StatusServices extends Fragment {
         strStatus.append("\r\n");
         strStatus.append("\r\n");
 
-        for (ServiceStatus serviceStatus : serviceStatusList) {
-            strStatus.append(serviceStatus.getServiceName());
+//        for (ServiceStatus serviceStatus : serviceStatusList) {
+//            strStatus.append(serviceStatus.getServiceName());
+//            strStatus.append(STRING_DELEMITER);
+//            if(serviceStatus.getStatus()) {
+//                strStatus.append(STRING_STATUS_ON);
+//            }
+//            else {
+//                strStatus.append(STRING_STATUS_OFF);
+//            }
+//            strStatus.append("\r\n");
+//        }
+
+        for (AbstractTask abstractTask : abstractTasksList) {
+            strStatus.append(abstractTask.getServiceName());
             strStatus.append(STRING_DELEMITER);
-            if(serviceStatus.getStatus()) {
+            if(abstractTask.getStatus()) {
                 strStatus.append(STRING_STATUS_ON);
             }
             else {
@@ -62,6 +76,7 @@ public class StatusServices extends Fragment {
             }
             strStatus.append("\r\n");
         }
+
         strStatus.append(STRING_GLOBAL_DELEMITER);
     }
 
