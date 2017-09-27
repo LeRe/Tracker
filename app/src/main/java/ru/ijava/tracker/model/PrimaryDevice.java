@@ -21,9 +21,9 @@ import ru.ijava.tracker.services.TrackerService;
  * Created by levchenko on 09.08.2017.
  */
 
-public class PrimaryDevice extends Device implements Preferences.ChangePreferenceListener, SeviceStatusList {
+public class PrimaryDevice extends Device implements Preferences.ChangePreferenceListener {
     private static PrimaryDevice primaryDevice;
-    private static ArrayList<ServiceStatus> serviceStatusList = new ArrayList<ServiceStatus>();
+    //private static ArrayList<ServiceStatus> serviceStatusList = new ArrayList<ServiceStatus>();
 
     private TrackerService mTrackerService;
 
@@ -72,17 +72,18 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
         Log.i("RELE", "NickName changed on " + nickName);
     }
 
-    @Override
-    public ArrayList<ServiceStatus> getServiceStatusList() {
-        return serviceStatusList;
-    }
-
-    @Override
-    public void addService(ServiceStatus serviceStatus) {
-        if(serviceStatus != null) {
-            serviceStatusList.add(serviceStatus);
-        }
-    }
+    // from interface  SeviceStatusList
+//    @Override
+//    public ArrayList<ServiceStatus> getServiceStatusList() {
+//        return serviceStatusList;
+//    }
+//
+//    @Override
+//    public void addService(ServiceStatus serviceStatus) {
+//        if(serviceStatus != null) {
+//            serviceStatusList.add(serviceStatus);
+//        }
+//    }
 
     public List<AbstractTask> getAbstractTaskList() {
         List<AbstractTask> abstractTaskList = null;

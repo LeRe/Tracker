@@ -39,7 +39,6 @@ public class StatusServices extends Fragment {
             primaryDevice = PrimaryDevice.getInstance(getActivity());
         }
 
-        //List<ServiceStatus> serviceStatusList = primaryDevice.getServiceStatusList();
         List<AbstractTask> abstractTasksList = primaryDevice.getAbstractTaskList();
 
         strStatus = new StringBuilder();
@@ -52,18 +51,6 @@ public class StatusServices extends Fragment {
         strStatus.append(STRING_GLOBAL_DELEMITER_SHORT);
         strStatus.append("\r\n");
         strStatus.append("\r\n");
-
-//        for (ServiceStatus serviceStatus : serviceStatusList) {
-//            strStatus.append(serviceStatus.getServiceName());
-//            strStatus.append(STRING_DELEMITER);
-//            if(serviceStatus.getStatus()) {
-//                strStatus.append(STRING_STATUS_ON);
-//            }
-//            else {
-//                strStatus.append(STRING_STATUS_OFF);
-//            }
-//            strStatus.append("\r\n");
-//        }
 
         for (AbstractTask abstractTask : abstractTasksList) {
             strStatus.append(abstractTask.getServiceName());
