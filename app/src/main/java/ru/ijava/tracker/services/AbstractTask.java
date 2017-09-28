@@ -11,11 +11,10 @@ public abstract class AbstractTask {
     public String getServiceName() {
         return taskName;
     }
-    protected abstract void checkStatus();
     public boolean getStatus() {
         return taskEnable;
     }
+    protected abstract void checkStatus();
     public abstract void runTask();
     public abstract void stopTask();
-
 }

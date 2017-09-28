@@ -15,7 +15,6 @@ import java.util.List;
 
 import ru.ijava.tracker.model.PrimaryDevice;
 import ru.ijava.tracker.services.AbstractTask;
-import ru.ijava.tracker.services.ServiceStatus;
 
 /**
  * Created by rele on 8/14/17.

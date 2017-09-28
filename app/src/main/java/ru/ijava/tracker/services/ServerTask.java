@@ -1,8 +1,6 @@
 package ru.ijava.tracker.services;
 
 import android.content.Context;
-import android.util.Log;
-
 import ru.ijava.tracker.network.MessageHandler;
 import ru.ijava.tracker.network.Server;
 
@@ -20,7 +18,6 @@ public class ServerTask extends AbstractTask {
         MessageHandler messageHandler = new MessageHandler(context);
         server = new Server(messageHandler);
     }
-
 
     @Override
     protected void checkStatus() {
