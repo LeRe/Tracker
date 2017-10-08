@@ -31,7 +31,10 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
         Intent intentTracker = new Intent(context, TrackerService.class);
         context.startService(intentTracker);
 
-        context.bindService(intentTracker, mConnection, Context.BIND_ABOVE_CLIENT);
+        if(mConnection!=null) {
+            context.bindService(intentTracker, mConnection, Context.BIND_ABOVE_CLIENT);
+        }
+
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -60,7 +63,10 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
     @Override
     public void updatePreference(Preferences preferences) {
         nickName = preferences.getNickname();
-        Log.i("RELE", "NickName changed on " + nickName);
+        // Сообщаем сервису об изменении настроек, пусть проверит задачи, может что-то надо запустить или остановить
+        if(mTrackerService != null){
+            mTrackerService.changeTask();
+        }
     }
 
     public List<AbstractTask> getAbstractTaskList() {

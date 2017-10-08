@@ -23,7 +23,7 @@ public class TrackerTask extends AbstractTask {
         taskName = "Tracker task";
         this.context = context;
 
-        //TODO оно надо?... Да, судя по всему надо, т.к. используется в PositionSystem, хотя можно перенести этот код туда, в PositionSystem, тут экземпляр PrimaryDevice никто не пользует
+        //TODO оно надо?... Да, судя по всему надо, т.к. используется в PositionSystem, хотя можно перенести этот код туда, в PositionSystem, тут экземпляр PrimaryDevice никто не пользует Будем это делать в момент причесывания PositionSystem
         try {
             primaryDevice = PrimaryDevice.getInstance();
         } catch (Exception e) {
@@ -56,9 +56,11 @@ public class TrackerTask extends AbstractTask {
 
     @Override
     public void stopTask() {
-        timer.cancel();
-        timer.purge();
-        timer = null;
+        if(timer!=null){
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
         taskEnable = false;
     }
 }

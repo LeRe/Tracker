@@ -22,13 +22,6 @@ public class MenuActivity extends AppCompatActivity {
     public static final int POSITIONS_ALL = 1;
 
     /**
-     *  TODO ********************
-     *  TODO Global TODOs list!!!
-     *  TODO 1. Рассмотреть вопрос о переносе запуска TrackerService в PrimaryDevice
-     *  TODO        Логика прежняя: сервис служит цели определения позиции устройства.
-     *  TODO        Устройство у нас это PrimaryDevice, вот пусть он и запускает этот сервис.
-     *  TODO        B занимается им, незачем тянуть эти закуски и дергать их из GUI.
-     * TODO УЖЕ СДЕЛАНО, ПРОВЕРЯЕМ!!!
      *
      *  TODO 2. Затащить проверку разрешения на определение позиции в PrimaryDevice
      *   TODO надо запустить проверку когда пользователь смотрит на активити,

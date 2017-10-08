@@ -41,9 +41,13 @@ public class TrackerService  extends Service {
 
         //Проверяем можно ли запустить Задачи и запускаем их если они не запущены
 
-        //TODO Об изменении настроек оповещение приходит примари девайсу, он дергает сервис(вызывает метод) сервис проверяет настройки и в соответствии с ними запускает или останавливает таски
+        checkPreferenceStartStopTask();
 
-        //TODO на основе нижеидущей порнографии родится приватный метод о котором речь идет ниже...
+        return START_STICKY;
+    }
+
+    //проверяет настройки и в зависимости от их состояния запускает или останавливает задачи,
+    private void checkPreferenceStartStopTask() {
         Context context = getApplicationContext();
         Preferences preferences = Preferences.getInstance(context);
         if(serverTask == null) {
@@ -52,20 +56,26 @@ public class TrackerService  extends Service {
         if(trackerTask == null) {
             trackerTask = new TrackerTask(context);
         }
+
         if(!preferences.isOnlyServer() && trackerTask.getStatus() == false) {
             trackerTask.runTask();
         }
+        else {
+            trackerTask.stopTask();
+        }
+
         if(serverTask.getStatus() == false) {
             serverTask.runTask();
         }
-
-        return START_STICKY;
+        else {
+            serverTask.stopTask();
+        }
     }
 
-    //TODO тут будет метод который будет проверять настройки и в зависимости от их состояния запускать или останавливать задачи, вызываться будет при старте сервера и из нижестоящего публичного метода который будет дергать примари девайс при изменении настроек (при получении соответствующего оповещения)
-
-    //TODO тут будет публичный метод который будет вызывать примари девайс при получении оповещения об изменении настроек, он будет вызывать выщестоящий приватный метод
-
+    //Этот метод необходимо запустить если изменились настройки (Это будет делать PrimaryDevice)
+    public void changeTask() {
+        checkPreferenceStartStopTask();
+    }
 
     public List<AbstractTask> getAbstractTasks() {
         List<AbstractTask> abstractTaskList = new ArrayList<AbstractTask>();
