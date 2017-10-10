@@ -24,10 +24,10 @@ public class Server implements Runnable {
     @Override
     public void run() {
         try {
-            ServerSocket ss = new ServerSocket(PORT);
+            ServerSocket serverSocket = new ServerSocket(PORT);
             while (true) {
-                Socket s = ss.accept();
-                new Thread(new SocketProcessor(s)).start();
+                Socket socket = serverSocket.accept();
+                new Thread(new SocketProcessor(socket)).start();
             }
         }
         catch (IOException e)
@@ -37,17 +37,17 @@ public class Server implements Runnable {
     }
 
     private static class SocketProcessor implements Runnable, NetworkDevice {
-        private Socket s;
+        private Socket socket;
         private ObjectOutputStream objectOutputStream;
         private ObjectInputStream objectInputStream;
 
         private boolean closeConnection = false;
 
-        private SocketProcessor(Socket s) {
-            this.s = s;
+        private SocketProcessor(Socket socket) {
+            this.socket = socket;
             try {
-                this.objectOutputStream = new ObjectOutputStream(s.getOutputStream());
-                this.objectInputStream = new ObjectInputStream(s.getInputStream());
+                this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                this.objectInputStream = new ObjectInputStream(socket.getInputStream());
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -57,14 +57,15 @@ public class Server implements Runnable {
         public void run() {
             try {
                 while (!closeConnection) {
-                    readClientRequest();
+                    Message message = readClientRequest();
+                    processMessage(message);
                     writeResponse(generateResponse());
                 }
             } catch (Throwable t) {
                 /*do nothing*/
             } finally {
                 try {
-                    s.close();
+                    socket.close();
                 } catch (Throwable t) {
                     /*do nothing*/
                 }
@@ -84,8 +85,12 @@ public class Server implements Runnable {
             objectOutputStream.flush();
         }
 
-        private void readClientRequest() throws Throwable {
+        private Message readClientRequest() throws Throwable {
             Message message = (Message) objectInputStream.readObject();
+            return message;
+        }
+
+        private void processMessage(Message message) {
             if(message != null) {
                 messageHandler.process(message);
             }
