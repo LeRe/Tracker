@@ -5,8 +5,10 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -95,10 +97,12 @@ public class LogSystem {
 
                     File file = new File(fullFileName);
 
-                    outputStream = new FileOutputStream(file);
+                    outputStream = new FileOutputStream(file, true);
                     //Перезаписывает файл, TODO открыть файл на добавление
                     //outputStream = context.openFileOutput(fullFileName, Context.MODE_APPEND);
                     outputStream.write(message.getBytes());
+                    String newLine = System.getProperty("line.separator");
+                    outputStream.write(newLine.getBytes());
                     outputStream.flush();
                     outputStream.close();
                 } catch (Exception e) {
