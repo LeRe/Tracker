@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import ru.ijava.tracker.R;
 import ru.ijava.tracker.db.DBHelper;
 import ru.ijava.tracker.model.Device;
+import ru.ijava.tracker.model.LogSystem;
 import ru.ijava.tracker.model.Preferences;
 import ru.ijava.tracker.model.PrimaryDevice;
 
@@ -93,6 +94,10 @@ public class MenuActivity extends AppCompatActivity {
         preferences.addChangePreferenceListener(primaryDevice);
 
         device = primaryDevice;
+
+
+        LogSystem logSystem = LogSystem.getInstance(getApplicationContext());
+        logSystem.save("Test log system", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
     }
 
     @Override
