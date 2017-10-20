@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+
+import ru.ijava.tracker.model.LogSystem;
 import ru.ijava.tracker.model.Preferences;
 
 /**
@@ -33,12 +35,15 @@ public class TrackerService  extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        LogSystem logSystem = LogSystem.getInstance(getApplicationContext());
+        logSystem.save("TrackerService.onBind(...) runned now, something bind to TrackerService", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         return mBinder;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        LogSystem logSystem = LogSystem.getInstance(getApplicationContext());
+        logSystem.save("TrackerService.onStartCommand(...) runned now, TrackerService cold start", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         //Проверяем можно ли запустить Задачи и запускаем их если они не запущены
 
         checkPreferenceStartStopTask();
@@ -49,6 +54,8 @@ public class TrackerService  extends Service {
     //проверяет настройки и в зависимости от их состояния запускает или останавливает задачи,
     private void checkPreferenceStartStopTask() {
         Context context = getApplicationContext();
+        LogSystem logSystem = LogSystem.getInstance(context);
+
         Preferences preferences = Preferences.getInstance(context);
         if(serverTask == null) {
             serverTask = new ServerTask(context);
@@ -59,16 +66,20 @@ public class TrackerService  extends Service {
 
         if(!preferences.isOnlyServer() && trackerTask.getStatus() == false) {
             trackerTask.runTask();
+            logSystem.save("trackerTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
         else {
             trackerTask.stopTask();
+            logSystem.save("trackerTask stopped", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
 
         if(serverTask.getStatus() == false) {
             serverTask.runTask();
+            logSystem.save("serverTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
         else {
             serverTask.stopTask();
+            logSystem.save("serverTask stopped", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
     }
 

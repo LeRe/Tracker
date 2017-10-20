@@ -70,7 +70,7 @@ public class LogSystem {
     private String generateFullMessage(String message, DebugLevel debugLevel) {
         StringBuilder fullMessage = new StringBuilder();
 
-        fullMessage.append(new SimpleDateFormat("ddMMyyyy HHmmss").format(Calendar.getInstance().getTime()));
+        fullMessage.append(new SimpleDateFormat("dd-MM-yyyy HH:mm.ss").format(Calendar.getInstance().getTime()));
         fullMessage.append(DELIMITER);
 
         fullMessage.append(debugLevel);
@@ -98,23 +98,24 @@ public class LogSystem {
                     File file = new File(fullFileName);
 
                     outputStream = new FileOutputStream(file, true);
-                    //Перезаписывает файл, TODO открыть файл на добавление
-                    //outputStream = context.openFileOutput(fullFileName, Context.MODE_APPEND);
                     outputStream.write(message.getBytes());
-                    String newLine = System.getProperty("line.separator");
-                    outputStream.write(newLine.getBytes());
+                    outputStream.write(System.getProperty("line.separator").getBytes());
                     outputStream.flush();
                     outputStream.close();
                 } catch (Exception e) {
+                    this.save("Take Exception. In LogSystem. LogSystem can't write to file",
+                            DebugLevel.DEBUG, OutputDirection.LOGI);
                     e.printStackTrace();
                 }
             }
             else {
-                this.outputLogI("ERROR!!! I am LogSystem. I can't write to DIRECTORY_DOWNLOADS, please check permission");
+                this.save("ERROR!!! I am LogSystem. I can't write to DIRECTORY_DOWNLOADS, please check permission",
+                        DebugLevel.DEBUG, OutputDirection.LOGI);
             }
         }
         else {
-            this.outputLogI("ERROR!!! I am LogSystem. I got empty context. I can't write to file");
+            this.save("ERROR!!! I am LogSystem. I got empty context. I can't write to file",
+                    DebugLevel.DEBUG, OutputDirection.LOGI);
         }
     }
 
@@ -123,7 +124,8 @@ public class LogSystem {
             this.context = context;
         }
         else {
-            this.outputLogI("ERROR!!! I am LogSystem. I got empty context");
+            this.save("ERROR!!! I am LogSystem. I got empty context",
+                    DebugLevel.DEBUG, OutputDirection.LOGI);
         }
     }
 }
