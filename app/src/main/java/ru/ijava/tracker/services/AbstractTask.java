@@ -11,7 +11,7 @@ public abstract class AbstractTask {
     public String getServiceName() {
         return taskName;
     }
-    public boolean getStatus() {
+    public boolean isRunning() {
         return taskEnable;
     }
     protected abstract void checkStatus();

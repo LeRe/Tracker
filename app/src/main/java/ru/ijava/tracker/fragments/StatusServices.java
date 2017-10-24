@@ -2,7 +2,6 @@ package ru.ijava.tracker.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -51,16 +50,18 @@ public class StatusServices extends Fragment {
         strStatus.append("\r\n");
         strStatus.append("\r\n");
 
-        for (AbstractTask abstractTask : abstractTasksList) {
-            strStatus.append(abstractTask.getServiceName());
-            strStatus.append(STRING_DELEMITER);
-            if(abstractTask.getStatus()) {
-                strStatus.append(STRING_STATUS_ON);
+        if(abstractTasksList != null) {
+            for (AbstractTask abstractTask : abstractTasksList) {
+                strStatus.append(abstractTask.getServiceName());
+                strStatus.append(STRING_DELEMITER);
+                if(abstractTask.isRunning()) {
+                    strStatus.append(STRING_STATUS_ON);
+                }
+                else {
+                    strStatus.append(STRING_STATUS_OFF);
+                }
+                strStatus.append("\r\n");
             }
-            else {
-                strStatus.append(STRING_STATUS_OFF);
-            }
-            strStatus.append("\r\n");
         }
 
         strStatus.append(STRING_GLOBAL_DELEMITER);

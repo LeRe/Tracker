@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.gms.iid.InstanceID;
 import java.util.List;
 import ru.ijava.tracker.services.AbstractTask;
@@ -30,11 +32,15 @@ public class PrimaryDevice extends Device implements Preferences.ChangePreferenc
 
         Intent intentTracker = new Intent(context, TrackerService.class);
         context.startService(intentTracker);
+        //context.bindService(intentTracker, mConnection, Context.BIND_ABOVE_CLIENT);
+        context.bindService(intentTracker, mConnection, 0);
 
-        if(mConnection!=null) {
-            context.bindService(intentTracker, mConnection, Context.BIND_ABOVE_CLIENT);
-        }
-
+//        if(mConnection!=null) {
+//            boolean bindSuccessfully = context.bindService(intentTracker, mConnection, Context.BIND_ABOVE_CLIENT);
+//            if(!bindSuccessfully) {
+//                context.startService(intentTracker);
+//            }
+//        }
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {

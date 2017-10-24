@@ -177,4 +177,5 @@ public class MenuActivity extends AppCompatActivity {
             sqliteDB.getDeviceLocationsHistory(device);
         }
     }
+
 }

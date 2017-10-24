@@ -30,7 +30,7 @@ public class ServerTask extends AbstractTask {
     }
 
     @Override
-    public boolean getStatus() {
+    public boolean isRunning() {
         checkStatus();
         return taskEnable;
     }

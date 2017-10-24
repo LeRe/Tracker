@@ -64,7 +64,7 @@ public class TrackerService  extends Service {
             trackerTask = new TrackerTask(context);
         }
 
-        if(!preferences.isOnlyServer() && trackerTask.getStatus() == false) {
+        if(!preferences.isOnlyServer() && !trackerTask.isRunning()) {
             trackerTask.runTask();
             logSystem.save("trackerTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
@@ -73,13 +73,14 @@ public class TrackerService  extends Service {
             logSystem.save("trackerTask stopped", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
 
-        if(serverTask.getStatus() == false) {
+        // univocal start
+        if(!serverTask.isRunning()) {
             serverTask.runTask();
             logSystem.save("serverTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
         else {
-            serverTask.stopTask();
-            logSystem.save("serverTask stopped", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+            //serverTask.stopTask();
+            logSystem.save("serverTask is running now, impossible to stop", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
     }
 
@@ -99,5 +100,13 @@ public class TrackerService  extends Service {
         }
 
         return abstractTaskList;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        LogSystem logSystem = LogSystem.getInstance(getApplicationContext());
+        logSystem.save("TrackerService.onDestroy(...) runned now, TrackerService was destroyed", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
     }
 }
