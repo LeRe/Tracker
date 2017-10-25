@@ -71,13 +71,22 @@ public class TrackerService  extends Service {
             logSystem.save("TrackerService.checkPreferenceStartStopTask(): preferences != null", LogSystem.DebugLevel.INFO, LogSystem.OutputDirection.All);
         }
 
-        if(!preferences.isOnlyServer() && !trackerTask.isRunning()) {
+        boolean trackerTaskRunning = trackerTask.isRunning();
+        if(trackerTaskRunning) {
+            logSystem.save("trackerTask works now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+        }
+        else
+        {
+            logSystem.save("trackerTask DO NOT works now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+        }
+
+        if(!preferences.isOnlyServer() && !trackerTaskRunning) {
             trackerTask.runTask();
-            logSystem.save("trackerTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+            logSystem.save("trackerTask launched now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
         else {
-            trackerTask.stopTask();
-            logSystem.save("trackerTask stopped", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+            //trackerTask.stopTask();
+            logSystem.save("trackerTask was an attempt to stop, but stop is disabled now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
 
         // univocal start

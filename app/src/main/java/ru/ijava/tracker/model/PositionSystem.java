@@ -21,48 +21,56 @@ import ru.ijava.tracker.network.MessageHandler;
 public class PositionSystem {
     public static final String TRACKER_PROVIDER = "tracker";
 
-    private Activity activity;
+    //Possible Deprecated
+//    private Activity activity;
     private Context context;
     private PrimaryDevice primaryDevice;
 
-    public PositionSystem(Activity activity, PrimaryDevice primaryDevice) {
-        this.activity = activity;
-        this.primaryDevice = primaryDevice;
-        this.determineCurrentLocation();
-    }
+    //Possible Deprecated
+//    public PositionSystem(Activity activity, PrimaryDevice primaryDevice) {
+//        this.activity = activity;
+//        this.primaryDevice = primaryDevice;
+//        this.determineCurrentLocation();
+//    }
 
     public PositionSystem(Context context, PrimaryDevice primaryDevice) {
         this.context = context;
         this.primaryDevice = primaryDevice;
         this.determineCurrentLocation();
-    }
-
-
-    private void determineCurrentLocationViaFusedClient(){
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    MenuActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-        else {
-            FusedLocationProviderClient fusedLocationClient;
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
-            fusedLocationClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<android.location.Location>() {
-                @Override
-                public void onSuccess(android.location.Location location) {
-                    if (location != null && primaryDevice != null) {
-                        primaryDevice.setCurrentLocation(location);
-                        saveDeviceLocation(activity.getApplicationContext(), primaryDevice);
-                    }
-                }
-            });
+        if(context != null) {
+            LogSystem logSystem = LogSystem.getInstance(context);
+            logSystem.save("PositionSystem object created", LogSystem.DebugLevel.INFO, LogSystem.OutputDirection.All);
         }
     }
+
+//Possible Deprecated
+//    private void determineCurrentLocationViaFusedClient(){
+//        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+//                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//
+//            ActivityCompat.requestPermissions(activity,
+//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                    MenuActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+//        }
+//        else {
+//            FusedLocationProviderClient fusedLocationClient;
+//            fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
+//            fusedLocationClient.getLastLocation().addOnSuccessListener(activity, new OnSuccessListener<android.location.Location>() {
+//                @Override
+//                public void onSuccess(android.location.Location location) {
+//                    if (location != null && primaryDevice != null) {
+//                        primaryDevice.setCurrentLocation(location);
+//                        saveDeviceLocation(activity.getApplicationContext(), primaryDevice);
+//                    }
+//                }
+//            });
+//        }
+//    }
 
     private void determineCurrentLocationViaLocationService()
     {
+        LogSystem logSystem = LogSystem.getInstance(context);
+
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         String locationProvider = LocationManager.GPS_PROVIDER;
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -80,7 +88,8 @@ public class PositionSystem {
         if(lastKnownLocation != null) {
             ////////PositionSystem positionSystem = new PositionSystem(getApplicationContext(), device);
             primaryDevice.setCurrentLocation(lastKnownLocation);
-
+            logSystem.save("Location is determine " + lastKnownLocation.getLatitude() + " " + lastKnownLocation.getLongitude(),
+                    LogSystem.DebugLevel.INFO, LogSystem.OutputDirection.All);
             saveDeviceLocation(context, primaryDevice);
         }
     }
@@ -100,9 +109,10 @@ public class PositionSystem {
         if(context != null) {
             determineCurrentLocationViaLocationService();
         }
-        else if(activity != null) {
-            determineCurrentLocationViaFusedClient();
-        }
+        //Possible Deprecated
+//        else if(activity != null) {
+//            determineCurrentLocationViaFusedClient();
+//        }
     }
 
 }
