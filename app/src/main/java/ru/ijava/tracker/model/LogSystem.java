@@ -22,10 +22,10 @@ public class LogSystem {
     private Context context;
     private static LogSystem instance;
 
-    public enum DebugLevel {DEBUG, INFO}
+    public enum DebugLevel {ERROR, DEBUG, INFO}
     public enum OutputDirection {LOGI, FILE, All}
 
-    private final DebugLevel currentDebugLevel = DebugLevel.DEBUG;
+    private final DebugLevel currentDebugLevel = DebugLevel.INFO;
     private final OutputDirection defaultOutputDirection = OutputDirection.All;
 
     private static final String DELIMITER = "     ";

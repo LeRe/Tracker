@@ -64,6 +64,13 @@ public class TrackerService  extends Service {
             trackerTask = new TrackerTask(context);
         }
 
+        if(preferences == null) {
+            logSystem.save("TrackerService.checkPreferenceStartStopTask(): preferences == null", LogSystem.DebugLevel.ERROR, LogSystem.OutputDirection.All);
+        }
+        else {
+            logSystem.save("TrackerService.checkPreferenceStartStopTask(): preferences != null", LogSystem.DebugLevel.INFO, LogSystem.OutputDirection.All);
+        }
+
         if(!preferences.isOnlyServer() && !trackerTask.isRunning()) {
             trackerTask.runTask();
             logSystem.save("trackerTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
