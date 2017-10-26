@@ -65,10 +65,7 @@ public class TrackerService  extends Service {
         }
 
         if(preferences == null) {
-            logSystem.save("TrackerService.checkPreferenceStartStopTask(): preferences == null", LogSystem.DebugLevel.ERROR, LogSystem.OutputDirection.All);
-        }
-        else {
-            logSystem.save("TrackerService.checkPreferenceStartStopTask(): preferences != null", LogSystem.DebugLevel.INFO, LogSystem.OutputDirection.All);
+            logSystem.save("TrackerService.checkPreferenceStartStopTask(): preferences == null !!!!!", LogSystem.DebugLevel.ERROR, LogSystem.OutputDirection.All);
         }
 
         boolean trackerTaskRunning = trackerTask.isRunning();
@@ -78,6 +75,13 @@ public class TrackerService  extends Service {
         else
         {
             logSystem.save("trackerTask DO NOT works now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+        }
+        boolean serverTaskRunning = serverTask.isRunning();
+        if(serverTaskRunning) {
+            logSystem.save("serverTask works now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+        }
+        else {
+            logSystem.save("serverTask DO NOT works now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
 
         if(!preferences.isOnlyServer() && !trackerTaskRunning) {
@@ -92,11 +96,11 @@ public class TrackerService  extends Service {
         // univocal start
         if(!serverTask.isRunning()) {
             serverTask.runTask();
-            logSystem.save("serverTask runned now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+            logSystem.save("serverTask launched now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
         else {
             //serverTask.stopTask();
-            logSystem.save("serverTask is running now, impossible to stop", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+            logSystem.save("serverTask  was an attempt to stop, impossible to stop", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
     }
 

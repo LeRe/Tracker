@@ -98,19 +98,28 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void saveDeviceLocation(Device device) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
+        String deviceId = device.getId();
         Location location = device.getCurrentLocation();
 
+        //Проверить есть ли в таблице устройств устройство с именем и айди принадлежащих device
+        //если НЕТ сохраняем в таблицу устройств устройство с данным айди и именем
+//        if(!deviceSavedInDB()) {
+//            deviceSave();
+//        }
+
+
+        saveLocation(deviceId, location);
+    }
+
+    private void saveLocation(String deviceId, Location location) {
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, device.getId());
+        values.put(DBContract.Location.COLUMN_NAME_DEVICE_ID, deviceId);
         values.put(DBContract.Location.COLUMN_NAME_TIMESTAMP, location.getTime());
         values.put(DBContract.Location.COLUMN_NAME_LATITUDE, location.getLatitude());
         values.put(DBContract.Location.COLUMN_NAME_LONGITUDE, location.getLongitude());
         values.put(DBContract.Location.COLUMN_NAME_PROVIDER, location.getProvider());
-
         long rowId = db.insert(DBContract.Location.TABLE_NAME, null, values);
-
         db.close();
     }
 
@@ -191,24 +200,6 @@ public class DBHelper extends SQLiteOpenHelper {
             db.insert(DBContract.Location.TABLE_NAME, null, values);
 
         }
-/*
-1 fbhnWIJJCyY 1499137826465 55.4219 37.7711
-2 fbhnWIJJCyY 1499137826465 55.4219 37.7711
-3 fbhnWIJJCyY 1499137826465 55.4219 37.7711
-4 fbhnWIJJCyY 1499138180917 55.4219 37.771
-5 fbhnWIJJCyY 1499140074791 55.4259 37.7673
-6 fbhnWIJJCyY 1499140167422 55.4219 37.771
-7 fbhnWIJJCyY 1499140377727 55.4219 37.771
-8 fbhnWIJJCyY 1499143442071 55.4397 37.7496
-9 fbhnWIJJCyY 1499145574256 55.428 37.7708
-10 fbhnWIJJCyY 1499145877576 55.4048 37.784
-11 fbhnWIJJCyY 1499146447615 55.3338 37.7298
-12 fbhnWIJJCyY 1499152267238 55.171 37.3443
-13 fbhnWIJJCyY 1499153647243 55.2162 36.984
-14 fbhnWIJJCyY 1499154189734 55.2095 36.9609
-15 fbhnWIJJCyY 1499154189734 55.2095 36.9609
-16 fbhnWIJJCyY 1499167567159 55.2095 36.9609
-*/
     }
 
     public String getStatistics() {
