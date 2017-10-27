@@ -98,17 +98,40 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void saveDeviceLocation(Device device) {
+        String deviceName = device.getNickName();
         String deviceId = device.getId();
         Location location = device.getCurrentLocation();
-
         //Проверить есть ли в таблице устройств устройство с именем и айди принадлежащих device
         //если НЕТ сохраняем в таблицу устройств устройство с данным айди и именем
-//        if(!deviceSavedInDB()) {
-//            deviceSave();
-//        }
-
-
+        if(!deviceFoundInDatabase(deviceName, deviceId)) {
+            deviceSave(deviceName, deviceId);
+        }
         saveLocation(deviceId, location);
+    }
+
+    private boolean deviceFoundInDatabase(String deviceName, String deviceId) {
+        boolean deviceFound = false;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + DBContract.Device.TABLE_NAME + " WHERE " +
+                DBContract.Device.COLUMN_NAME_NICKNAME + "=\"" + deviceName + "\" " +
+                DBContract.Device._ID + "=\"" + deviceId + "\"";
+        Cursor cursor = db.rawQuery(query, null);
+        if(cursor.getCount() > 0) {
+            deviceFound = true;
+        }
+        cursor.close();
+        db.close();
+        return deviceFound;
+    }
+
+    private void deviceSave(String deviceName, String deviceId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBContract.Device._ID, deviceId);
+        values.put(DBContract.Device.COLUMN_NAME_NICKNAME, deviceName);
+        long rowId = db.insert(DBContract.Device.TABLE_NAME, null,values);
+        db.close();
     }
 
     private void saveLocation(String deviceId, Location location) {
