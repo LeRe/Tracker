@@ -114,7 +114,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + DBContract.Device.TABLE_NAME + " WHERE " +
-                DBContract.Device.COLUMN_NAME_NICKNAME + "=\"" + deviceName + "\" " +
+                DBContract.Device.COLUMN_NAME_NICKNAME + "=\"" + deviceName + "\" and " +
                 DBContract.Device._ID + "=\"" + deviceId + "\"";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.getCount() > 0) {
