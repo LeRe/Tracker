@@ -84,6 +84,10 @@ public class TrackerService  extends Service {
             logSystem.save("serverTask DO NOT works now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
         }
 
+        logSystem.save("preferences.isOnlyServer() == " + Boolean.toString(preferences.isOnlyServer()), LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+        logSystem.save("trackerTaskRunning == " + Boolean.toString(trackerTaskRunning), LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+        logSystem.save("serverTask.isRunning() == " + Boolean.toString(serverTask.isRunning()), LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);
+
         if(!preferences.isOnlyServer() && !trackerTaskRunning) {
             trackerTask.runTask();
             logSystem.save("trackerTask launched now", LogSystem.DebugLevel.DEBUG, LogSystem.OutputDirection.All);

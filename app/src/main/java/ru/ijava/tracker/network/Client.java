@@ -68,6 +68,15 @@ public class Client implements Runnable, NetworkDevice {
         this.PORT = Server.PORT;
     }
 
+    public Client(String addr, MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+        messagesQueue = new ArrayList<Message>();
+
+        this.HOST_NAME = addr;
+        this.PORT = Server.PORT;
+
+    }
+
     @Override
     public void run() {
         try {
