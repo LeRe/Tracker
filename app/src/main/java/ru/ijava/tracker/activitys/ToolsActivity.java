@@ -19,6 +19,9 @@ public class ToolsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tools);
 
+
+
+        //TODO remove after tests
         Preferences preferences = Preferences.getInstance(this);
         String remoteServerAddr = preferences.getRemoteServerAddress();
 
