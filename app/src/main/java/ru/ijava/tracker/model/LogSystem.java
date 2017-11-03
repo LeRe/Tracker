@@ -44,6 +44,10 @@ public class LogSystem {
         return instance;
     }
 
+    public void save(String message) {
+        save(message, null, null);
+    }
+
     public void save(String message, DebugLevel debugLevel, OutputDirection outputDirection) {
         if(message == null) {
             message = "nothing to say...";

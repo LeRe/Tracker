@@ -5,5 +5,6 @@ package ru.ijava.tracker.network;
  */
 
 public interface NetworkDevice {
-    public void closeConection();
+    void closeConection();
+    void setNetworkDevice(NetworkDevice networkDevice);
 }

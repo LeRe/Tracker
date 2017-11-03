@@ -44,6 +44,8 @@ public class Server implements Runnable {
         private boolean closeConnection = false;
 
         private SocketProcessor(Socket socket) {
+            setNetworkDevice(this);
+
             this.socket = socket;
             try {
                 this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -99,6 +101,11 @@ public class Server implements Runnable {
         @Override
         public void closeConection() {
             this.closeConnection = true;
+        }
+
+        @Override
+        public void setNetworkDevice(NetworkDevice networkDevice) {
+            messageHandler.setNetworkDevice(networkDevice);
         }
     }
 }

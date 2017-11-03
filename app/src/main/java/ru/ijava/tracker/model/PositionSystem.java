@@ -104,9 +104,9 @@ public class PositionSystem {
         new Thread(client).start();
         client.saveLocation(device, device.getCurrentLocation());
 
-//        Preferences preferences = Preferences.getInstance(context);
-//        String remoteServerAddr = preferences.getRemoteServerAddress();
-//
+        Preferences preferences = Preferences.getInstance(context);
+        String remoteServerAddr = preferences.getRemoteServerAddress();
+
 //        MessageHandler messageHandlerRemote = new MessageHandler(context);
 //        Client clientRemote = new Client(remoteServerAddr, messageHandler);
 //        new Thread(client).start();

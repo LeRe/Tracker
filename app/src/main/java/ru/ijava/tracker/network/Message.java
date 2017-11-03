@@ -13,7 +13,7 @@ import ru.ijava.tracker.model.Device;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public enum Action {CLOSE_CONECTION, SAVE_LOCATION, LOG_I}
+    public enum Action {PING, PONG, CLOSE_CONECTION, SAVE_LOCATION, LOG_I}
 
     public Action action;
 
@@ -24,6 +24,10 @@ public class Message implements Serializable {
     private double locationLatitude;
     private double locationLongitude;
     private String locationProvider;
+
+    public Message(Action action){
+        this.action = action;
+    }
 
     public Message(Action action, Device device, Location location){
         this.action = action;

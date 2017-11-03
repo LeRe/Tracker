@@ -66,6 +66,8 @@ public class Client implements Runnable, NetworkDevice {
 
         this.HOST_NAME = Server.LOCAL_HOST_NAME;
         this.PORT = Server.PORT;
+
+        setNetworkDevice(this);
     }
 
     public Client(String addr, MessageHandler messageHandler) {
@@ -75,6 +77,7 @@ public class Client implements Runnable, NetworkDevice {
         this.HOST_NAME = addr;
         this.PORT = Server.PORT;
 
+        setNetworkDevice(this);
     }
 
     @Override
@@ -128,6 +131,16 @@ public class Client implements Runnable, NetworkDevice {
     @Override
     public void closeConection() {
         this.closeConnection = true;
+    }
+
+    @Override
+    public void setNetworkDevice(NetworkDevice networkDevice) {
+        messageHandler.setNetworkDevice(networkDevice);
+    }
+
+    public void sendPing() {
+        Message message = new Message(Message.Action.PING);
+        messagesQueue.add(message);
     }
 
     public void saveLocation(Device device, Location location) {
